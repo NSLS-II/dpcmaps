@@ -18,17 +18,16 @@ except ImportError as ex:
     print('[!] (import error: {})'.format(ex))
     havetiff = False
 
-# try:
-#     from databroker import db, get_events
-# except ImportError as ex:
-#     print('[!] Unable to import DataBroker library.')
-from hxn_db_config import db
+try:
+    from databroker import db, get_events
+except ImportError as ex:
+    print('[!] Unable to import DataBroker library.')
 
 try:
     import hxntools
     import hxntools.handlers
     from hxntools.scan_info import ScanInfo
-    #from databroker import DataBroker
+    from databroker import DataBroker
 except ImportError as ex:
     print('[!] Unable to import hxntools library.')
     print('[!] (import error: {})'.format(ex))
@@ -43,8 +42,7 @@ version = '0.1.0'
 
 
 def load_scan_from_mds(scan_id):
-    #hdrs = DataBroker(scan_id=int(scan_id))
-    hdrs = db[int(scan_id)]
+    hdrs = DataBroker(scan_id=int(scan_id))
     if len(hdrs) == 1:
         hdr = hdrs[0]
 

@@ -20,6 +20,7 @@ from __future__ import (print_function, division)
 import os
 import sys
 import csv
+
 import time
 import logging
 from datetime import datetime
@@ -66,7 +67,7 @@ try:
     import hxntools.handlers
     from hxntools.scan_info import ScanInfo
     from hxntools.scan_monitor import HxnScanMonitor
-    from hxn_db_config import db
+    from databroker import DataBroker
 except ImportError as ex:
     print('[!] Unable to import hxntools-related packages some features will '
           'be unavailable')
@@ -140,9 +141,9 @@ def load_data_hdf5(file_path):
     return np.array(data)
 
 def load_image_hdf5(file_path):
-
+    
     data = load_data_hdf5(file_path)
-
+    
     return data[0, :, :]
 
 
@@ -363,7 +364,7 @@ class DPCWindow(QtGui.QMainWindow):
         self.histequalization = False
         self.showresiduals = False
         self.running = False
-
+        
 
         self.gx, self.gy, self.phi, self.a, self.rx, self.ry = None, None, None, None, None, None
         self.file_widget = QtGui.QLineEdit('Chromosome_9_%05d.tif')
@@ -695,29 +696,29 @@ class DPCWindow(QtGui.QMainWindow):
         self.image_vis_qbox.setLayout(self.image_vis_layout)
         self.image_vis_layout.addWidget(self.toolbar, 0, 0)
         self.image_vis_layout.addWidget(self.color_map, 0, 1)
-
+        
         line = QtGui.QFrame()
         line.setFrameShape(QtGui.QFrame.HLine)
-        line.setFrameShadow(QtGui.QFrame.Sunken)
-        self.image_vis_layout.addWidget(line, 1,0)
+        line.setFrameShadow(QtGui.QFrame.Sunken)         
+        self.image_vis_layout.addWidget(line, 1,0) 
         line = QtGui.QFrame()
         line.setFrameShape(QtGui.QFrame.HLine)
-        line.setFrameShadow(QtGui.QFrame.Sunken)
-        self.image_vis_layout.addWidget(line, 1,1)
-
+        line.setFrameShadow(QtGui.QFrame.Sunken)         
+        self.image_vis_layout.addWidget(line, 1,1) 
+        
         hboxcb = QtGui.QHBoxLayout()
         self.cb_histeq = QtGui.QCheckBox('Histogram Equalization', self)
         self.cb_histeq.setChecked(False)
         self.cb_histeq.stateChanged.connect(self.OnCBHistEqualization)
         hboxcb.addWidget(self.cb_histeq)
-
+        
         self.cb_resid = QtGui.QCheckBox('Show Residuals', self)
         self.cb_resid.setChecked(False)
         self.cb_resid.stateChanged.connect(self.OnCBShowResiduals)
-        hboxcb.addWidget(self.cb_resid)
-
-        self.image_vis_layout.addLayout(hboxcb, 2, 1)
-
+        hboxcb.addWidget(self.cb_resid)        
+        
+        self.image_vis_layout.addLayout(hboxcb, 2, 1)          
+        
         hboxslider = QtGui.QHBoxLayout()
         hboxslider.addWidget( QtGui.QLabel('Contrast'))
         self.slider_constrast = QtGui.QSlider(QtCore.Qt.Horizontal)
@@ -982,7 +983,7 @@ class DPCWindow(QtGui.QMainWindow):
         self.fs_key_cbox.setCurrentIndex(keys.index(key))
 
     def _load_scan_from_mds(self, scan_id, load_config=True):
-        hdrs = db[scan_id]
+        hdrs = DataBroker(scan_id=scan_id)
         if len(hdrs) == 1:
             hdr = hdrs[0]
         else:
@@ -1171,7 +1172,7 @@ class DPCWindow(QtGui.QMainWindow):
             self.set_roi_enabled = False
 
     def update_display(self, a, gx, gy, phi, rx, ry, flag=None):
-
+        
         # ax is a pyplot object
 
         def show_line(ax, line):
@@ -1184,22 +1185,22 @@ class DPCWindow(QtGui.QMainWindow):
         def show_image(ax, image):
             # return ax.imshow(np.flipud(image.T), interpolation='nearest',
             #                  origin='upper', cmap=cm.Greys_r)
-
+            
             if (image is None):
                 print ('image is none')
                 return
-
+            
             if self.histequalization:
-                return ax.imshow(exposure.equalize_hist(image),
+                return ax.imshow(exposure.equalize_hist(image), 
                                  interpolation='nearest',
-                                 origin='upper', cmap=cm.Greys_r)
+                                 origin='upper', cmap=cm.Greys_r)   
             elif (self.contrastval > 0):
-
+                
                 adjustedimage = (image - image.min())*255.0/image.ptp()
                 return ax.imshow(adjustedimage, interpolation='nearest',
                                  vmax = 255-self.contrastval*10,
-                                 origin='upper', cmap=cm.Greys_r)
-            else:
+                                 origin='upper', cmap=cm.Greys_r)                             
+            else:                
                 return ax.imshow(image, interpolation='nearest',
                                  origin='upper', cmap=cm.Greys_r)
 
@@ -1264,8 +1265,8 @@ class DPCWindow(QtGui.QMainWindow):
                 canvas.gy_ax = gy_ax = fig.add_subplot(gs[2, 0])
                 gy_ax.set_title('Phase gradient (y)', **tfont)
                 canvas.imy = imy = show_line(gy_ax, gy.T)
-
-
+                
+        
 
         else:
             if self.showresiduals:
@@ -1312,14 +1313,14 @@ class DPCWindow(QtGui.QMainWindow):
                 # canvas.imy = imy = show_line(gy_ax, gy)
                 fig.colorbar(imy)
                 imy.set_cmap(main._color_map)
-
+                
                 if self.showresiduals:
                     canvas.rx_ax = rx_ax = fig.add_subplot(gs[0, 2])
                     rx_ax.set_title('Residual error (x)', **tfont)
                     canvas.imrx = imrx = show_image(rx_ax, rx)
                     fig.colorbar(imrx)
                     imrx.set_cmap(main._color_map)
-
+    
                     canvas.ry_ax = ry_ax = fig.add_subplot(gs[1, 2])
                     ry_ax.set_title('Residual error (y)', **tfont)
                     canvas.imry = imry = show_image(ry_ax, ry)
@@ -1344,7 +1345,7 @@ class DPCWindow(QtGui.QMainWindow):
                                                    main.direction)
                 fig.colorbar(imy)
                 imy.set_cmap(main._color_map)
-
+                
                 if self.showresiduals:
                     canvas.rx_ax = rx_ax = fig.add_subplot(gs[0, 2])
                     rx_ax.set_title('Residual error (x)', **tfont)
@@ -1355,7 +1356,7 @@ class DPCWindow(QtGui.QMainWindow):
                                                        main.direction)
                     fig.colorbar(imrx)
                     imrx.set_cmap(main._color_map)
-
+    
                     canvas.ry_ax = ry_ax = fig.add_subplot(gs[1, 2])
                     ry_ax.set_title('Residual error (y)', **tfont)
                     canvas.imry = imry = show_image_line(ry_ax, ry,
@@ -1394,7 +1395,7 @@ class DPCWindow(QtGui.QMainWindow):
         """
         self.direction = -self.direction
         self.update_display(a, gx, gy, phi, rx, ry, "strap")
-
+        
     def OnContrastSlider(self, pressed):
         """
         Change the contrast of the images
@@ -1405,25 +1406,25 @@ class DPCWindow(QtGui.QMainWindow):
     def OnCBHistEqualization(self,state):
         """
         Image histogram equalization
-        """
+        """        
         if state == QtCore.Qt.Checked:
             self.histequalization = True
-        else:
+        else: 
             self.histequalization = False
-
+        
         if not self.running: self.update_display(a, gx, gy, phi, rx, ry)
-
+        
     def OnCBShowResiduals(self,state):
         """
         Show residual images
-        """
+        """        
         if state == QtCore.Qt.Checked:
             self.showresiduals = True
-        else:
+        else: 
             self.showresiduals = False
-
+        
         if not self.running: self.update_display(a, gx, gy, phi, rx, ry)
-
+                
     def remove_background(self, pressed):
         """
         Remove the background of the phase image
