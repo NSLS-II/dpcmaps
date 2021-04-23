@@ -1,6 +1,6 @@
 import collections
 import numpy as np
-from hxn_db_config import db
+from databroker import DataBroker as db
 import logging
 
 
@@ -128,5 +128,5 @@ class Scan(object):
 
     def __iter__(self):
         if self.key:
-            for event in self.header.db.fetch_events(self.header, fill=False):
+            for event in db.fetch_events(self.header, fill=False):
                 yield event['data'][self.key]
