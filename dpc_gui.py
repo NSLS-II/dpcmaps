@@ -28,13 +28,16 @@ from functools import wraps
 import multiprocessing as mp
 import subprocess
 
-from PyQt4 import (QtCore, QtGui)
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QInputDialog
+from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QInputDialog, QFileDialog, QLabel, QLineEdit, QDoubleSpinBox,
+    QSpinBox, QComboBox, QPushButton, QSizePolicy, QGroupBox, QGridLayout, QListWidget, QWidget,
+    QCheckBox, QTextEdit, QFrame, QHBoxLayout, QSlider, QAction, QStyleFactory, QRubberBand, QMessageBox, QMenu)
+from PyQt5.QtGui import QPalette, QPixmap, QIcon, QPen, QPainter, QTextCursor
 import matplotlib.cm as cm
 from PIL import Image
 import PIL
-from scipy.misc import imsave
 from skimage import exposure
 import numpy as np
 import matplotlib as mpl
@@ -78,8 +81,8 @@ else:
 
 
 logger = logging.getLogger(__name__)
-get_save_filename = QtGui.QFileDialog.getSaveFileName
-get_open_filename = QtGui.QFileDialog.getOpenFileName
+get_save_filename = QFileDialog.getSaveFileName
+get_open_filename = QFileDialog.getOpenFileName
 
 version = '1.0.10'
 
@@ -226,7 +229,8 @@ class MplCanvas(FigureCanvas):
 
         # We want the axes cleared every time plot() is called
         self.axes = fig.add_subplot(1, 1, 1)
-        self.axes.hold(False)
+        # self.axes.hold(False)
+        self.axes.cla()
 
         FigureCanvas.__init__(self, fig)
 
@@ -234,8 +238,8 @@ class MplCanvas(FigureCanvas):
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
         self._title = ''
@@ -263,10 +267,10 @@ class MplCanvas(FigureCanvas):
     title = property(_get_title, _set_title)
 
 
-class Label(QtGui.QLabel):
+class Label(QLabel):
     def __init__(self, parent=None):
         super(Label, self).__init__(parent)
-        self.rubberBand = QtGui.QRubberBand(QtGui.QRubberBand.Rectangle, self)
+        self.rubberBand = QRubberBand(QRubberBand.Rectangle, self)
         self.origin = QtCore.QPoint()
 
     def mousePressEvent(self, event):
@@ -312,20 +316,20 @@ class Label(QtGui.QLabel):
                 self.rubberBand.show()
 
 
-class paintLabel(QtGui.QLabel):
+class paintLabel(QLabel):
     def __init__(self, parent=None):
         super(paintLabel, self).__init__(parent)
 
     def paintEvent(self, event):
         super(paintLabel, self).paintEvent(event)
-        qp = QtGui.QPainter()
+        qp = QPainter()
         qp.begin(self)
         self.drawLine(event, qp)
         qp.end()
 
     def drawLine(self, event, qp):
         size = self.size()
-        pen = QtGui.QPen(QtCore.Qt.red)
+        pen = QPen(QtCore.Qt.red)
         qp.setPen(pen)
         qp.drawLine(size.width()/2, 0, size.width()/2, size.height()-1)
         qp.drawLine(size.width()/2 - 1, 0, size.width()/2 - 1, size.height()-1)
@@ -341,11 +345,11 @@ class paintLabel(QtGui.QLabel):
         qp.drawLine(size.width()-1, 0, size.width()-1, size.height()-1)
 
 
-class DPCWindow(QtGui.QMainWindow):
+class DPCWindow(QMainWindow):
     CM_DEFAULT = 'gray'
 
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+        QMainWindow.__init__(self, parent)
         DPCWindow.instance = self
 
         self.bin_num = 2**16
@@ -367,48 +371,48 @@ class DPCWindow(QtGui.QMainWindow):
         
 
         self.gx, self.gy, self.phi, self.a, self.rx, self.ry = None, None, None, None, None, None
-        self.file_widget = QtGui.QLineEdit('Chromosome_9_%05d.tif')
+        self.file_widget = QLineEdit('Chromosome_9_%05d.tif')
         self.file_widget.setFixedWidth(350)
-        self.save_path_widget = QtGui.QLineEdit('/home')
-        self.focus_widget = QtGui.QDoubleSpinBox()
+        self.save_path_widget = QLineEdit('/home')
+        self.focus_widget = QDoubleSpinBox()
 
-        self.dx_widget = QtGui.QDoubleSpinBox()
-        self.dy_widget = QtGui.QDoubleSpinBox()
-        self.pixel_widget = QtGui.QDoubleSpinBox()
-        self.energy_widget = QtGui.QDoubleSpinBox()
-        self.rows_widget = QtGui.QSpinBox()
-        self.cols_widget = QtGui.QSpinBox()
-        self.mosaic_x_widget = QtGui.QSpinBox()
-        self.mosaic_y_widget = QtGui.QSpinBox()
-        self.roi_x1_widget = QtGui.QSpinBox()
-        self.roi_x2_widget = QtGui.QSpinBox()
-        self.roi_y1_widget = QtGui.QSpinBox()
-        self.roi_y2_widget = QtGui.QSpinBox()
-        self.strap_start = QtGui.QSpinBox()
-        self.strap_end = QtGui.QSpinBox()
-        self.first_widget = QtGui.QSpinBox()
+        self.dx_widget = QDoubleSpinBox()
+        self.dy_widget = QDoubleSpinBox()
+        self.pixel_widget = QDoubleSpinBox()
+        self.energy_widget = QDoubleSpinBox()
+        self.rows_widget = QSpinBox()
+        self.cols_widget = QSpinBox()
+        self.mosaic_x_widget = QSpinBox()
+        self.mosaic_y_widget = QSpinBox()
+        self.roi_x1_widget = QSpinBox()
+        self.roi_x2_widget = QSpinBox()
+        self.roi_y1_widget = QSpinBox()
+        self.roi_y2_widget = QSpinBox()
+        self.strap_start = QSpinBox()
+        self.strap_end = QSpinBox()
+        self.first_widget = QSpinBox()
         self.first_widget.valueChanged.connect(self._first_changed)
 
-        self.processes_widget = QtGui.QSpinBox()
+        self.processes_widget = QSpinBox()
         self.processes_widget.setMinimum(1)
         self.processes_widget.setValue(psutil.cpu_count())
         self.processes_widget.setMaximum(psutil.cpu_count())
 
-        self.solver_widget = QtGui.QComboBox()
+        self.solver_widget = QComboBox()
         for solver in SOLVERS:
             self.solver_widget.addItem(solver)
 
-        self.start_widget = QtGui.QPushButton('Start')
-        self.stop_widget = QtGui.QPushButton('Stop')
-        self.save_widget = QtGui.QPushButton('Save')
-        self.scan_button = QtGui.QPushButton('Load')
+        self.start_widget = QPushButton('Start')
+        self.stop_widget = QPushButton('Stop')
+        self.save_widget = QPushButton('Save')
+        self.scan_button = QPushButton('Load')
 
-        self.color_map = QtGui.QComboBox()
+        self.color_map = QComboBox()
         self.update_color_maps()
         self.color_map.currentIndexChanged.connect(self._set_color_map)
         self._color_map = mpl.cm.get_cmap(self.CM_DEFAULT)
 
-        self.ref_color_map = QtGui.QComboBox()
+        self.ref_color_map = QComboBox()
         self.update_ref_color_maps()
         self.ref_color_map.currentIndexChanged.connect(self._set_ref_color_map)
         self._ref_color_map = mpl.cm.get_cmap(self.CM_DEFAULT)
@@ -447,56 +451,56 @@ class DPCWindow(QtGui.QMainWindow):
         self.ax.figure.canvas.draw()
         self.ref_toolbar = NavigationToolbar(self.ref_canvas, self)
 
-        self.his_btn = QtGui.QPushButton('Equalize')
+        self.his_btn = QPushButton('Equalize')
         self.his_btn.setCheckable(True)
         self.his_btn.clicked[bool].connect(self.histgramEqua)
-        self.roi_btn = QtGui.QPushButton('Set ROI')
+        self.roi_btn = QPushButton('Set ROI')
         self.roi_btn.setCheckable(True)
         self.roi_btn.clicked[bool].connect(self.set_roi_enable)
-        self.bri_btn = QtGui.QPushButton('Brightest')
+        self.bri_btn = QPushButton('Brightest')
         self.bri_btn.clicked.connect(self.select_bri_pixels)
-        self.bad_btn = QtGui.QPushButton('Pick')
+        self.bad_btn = QPushButton('Pick')
         self.bad_btn.setCheckable(True)
         self.bad_btn.clicked[bool].connect(self.bad_enable)
 
-        self.line_btn = QtGui.QPushButton('Add')
+        self.line_btn = QPushButton('Add')
         self.line_btn.setEnabled(False)
         self.line_btn.clicked.connect(self.add_strap)
         direction_text = u'\N{CLOCKWISE OPEN CIRCLE ARROW} 90\N{DEGREE SIGN}'
-        self.direction_btn = QtGui.QPushButton(direction_text)
+        self.direction_btn = QPushButton(direction_text)
         self.direction_btn.clicked.connect(self.change_direction)
         self.direction_btn.setEnabled(False)
-        self.removal_btn = QtGui.QPushButton('Remove')
+        self.removal_btn = QPushButton('Remove')
         self.removal_btn.clicked.connect(self.remove_background)
         self.removal_btn.setEnabled(False)
-        self.confirm_btn = QtGui.QPushButton('Apply')
+        self.confirm_btn = QPushButton('Apply')
         self.confirm_btn.clicked.connect(self.confirm)
         self.confirm_btn.setEnabled(False)
-        self.hide_btn = QtGui.QPushButton("View && set")
+        self.hide_btn = QPushButton("View && set")
         self.hide_btn.setCheckable(True)
         self.hide_btn.clicked.connect(self.hide_ref)
 
-        self.ok_btn = QtGui.QPushButton('OK')
+        self.ok_btn = QPushButton('OK')
         self.ok_btn.clicked.connect(self.crop_ok)
-        self.cancel_btn = QtGui.QPushButton('Cancel')
+        self.cancel_btn = QPushButton('Cancel')
         self.cancel_btn.clicked.connect(self.crop_cancel)
 
         # Setting widget (QGridLayout) in the bottom of reference image
-        self.min_lbl = QtGui.QLabel('Min')
-        self.max_lbl = QtGui.QLabel('Max')
-        self.min_box = QtGui.QSpinBox()
-        self.max_box = QtGui.QSpinBox()
+        self.min_lbl = QLabel('Min')
+        self.max_lbl = QLabel('Max')
+        self.min_box = QSpinBox()
+        self.max_box = QSpinBox()
         self.min_box.setMaximum(self.bin_num)
         self.min_box.setMinimum(0)
         self.max_box.setMaximum(self.bin_num)
         self.max_box.setMinimum(0)
-        self.rescale_intensity_btn = QtGui.QPushButton('Apply')
+        self.rescale_intensity_btn = QPushButton('Apply')
         self.rescale_intensity_btn.clicked.connect(self.rescale_intensity)
 
-        self.badPixelGbox = QtGui.QGroupBox("Bad pixels")
-        self.badPixelGridLayout = QtGui.QGridLayout()
+        self.badPixelGbox = QGroupBox("Bad pixels")
+        self.badPixelGridLayout = QGridLayout()
         self.badPixelGbox.setLayout(self.badPixelGridLayout)
-        bpw = self.bad_pixels_widget = QtGui.QListWidget()
+        bpw = self.bad_pixels_widget = QListWidget()
         # Set the minimum height of the qlistwidget as 1 so that the
         # qlistwidget is always as as high as its two side buttons
         bpw.setMinimumHeight(1)
@@ -510,8 +514,8 @@ class DPCWindow(QtGui.QMainWindow):
         def ref_close(event):
             self.hide_btn.setChecked(False)
 
-        self.ref_grid = QtGui.QGridLayout()
-        self.ref_widget = QtGui.QWidget()
+        self.ref_grid = QGridLayout()
+        self.ref_widget = QWidget()
         self.ref_widget.closeEvent = ref_close
         self.ref_widget.setLayout(self.ref_grid)
         self.ref_grid.addWidget(self.ref_canvas, 0, 0, 1, 6)
@@ -526,48 +530,48 @@ class DPCWindow(QtGui.QMainWindow):
         self.ref_grid.addWidget(self.max_box, 4, 4)
         self.ref_grid.addWidget(self.rescale_intensity_btn, 4, 5)
 
-        self.file_format_btn = QtGui.QPushButton('Select')
+        self.file_format_btn = QPushButton('Select')
         # self.file_format_btn.setStyle(WinLayout)
         self.file_format_btn.clicked.connect(self.select_path)
 
         """
         QGroupBox implementation for image settings
         """
-        self.imageSettingGbox = QtGui.QGroupBox("Image settings")
-        self.imageSettingGridLayout = QtGui.QGridLayout()
+        self.imageSettingGbox = QGroupBox("Image settings")
+        self.imageSettingGridLayout = QGridLayout()
         self.imageSettingGbox.setLayout(self.imageSettingGridLayout)
-        self.scan_number_lbl = QtGui.QLabel('Scan number')
-        self.roi_x1_lbl = QtGui.QLabel('ROI X1')
-        self.roi_x2_lbl = QtGui.QLabel('ROI X2')
-        self.roi_y1_lbl = QtGui.QLabel('ROI Y1')
-        self.roi_y2_lbl = QtGui.QLabel('ROI Y2')
-        self.img_type_lbl = QtGui.QLabel('Image type')
-        self.pixel_size_lbl = QtGui.QLabel('Pixel size (um)')
-        self.file_name_lbl = QtGui.QLabel('File name')
-        self.first_img_num_lbl = QtGui.QLabel('First image number')
-        self.scan_info_lbl = QtGui.QLabel('')
+        self.scan_number_lbl = QLabel('Scan number')
+        self.roi_x1_lbl = QLabel('ROI X1')
+        self.roi_x2_lbl = QLabel('ROI X2')
+        self.roi_y1_lbl = QLabel('ROI Y1')
+        self.roi_y2_lbl = QLabel('ROI Y2')
+        self.img_type_lbl = QLabel('Image type')
+        self.pixel_size_lbl = QLabel('Pixel size (um)')
+        self.file_name_lbl = QLabel('File name')
+        self.first_img_num_lbl = QLabel('First image number')
+        self.scan_info_lbl = QLabel('')
         self.scan_info_lbl.setWordWrap(True)
-        self.select_ref_btn = QtGui.QPushButton('Select the reference')
+        self.select_ref_btn = QPushButton('Select the reference')
         self.select_ref_btn.clicked.connect(self.select_ref_img)
-        self.img_type_combobox = itc = QtGui.QComboBox()
+        self.img_type_combobox = itc = QComboBox()
         for types in TYPES:
             itc.addItem(types)
         itc.currentIndexChanged.connect(self.load_img_method)
 
-        self.first_ref_cbox = QtGui.QCheckBox("Use as the reference image")
+        self.first_ref_cbox = QCheckBox("Use as the reference image")
         self.first_ref_cbox.stateChanged.connect(self.first_equal_ref)
 
-        self.use_scan_number_cb = QtGui.QCheckBox("Read from metadatastore")
+        self.use_scan_number_cb = QCheckBox("Read from metadatastore")
         self.use_scan_number_cb.toggled.connect(self._use_scan_number_clicked)
-        fs_key_cbox = self.fs_key_cbox = QtGui.QComboBox()
+        fs_key_cbox = self.fs_key_cbox = QComboBox()
         fs_key_cbox.currentIndexChanged.connect(self._filestore_key_changed)
 
-        self.load_scan_btn = QtGui.QPushButton('Load')
+        self.load_scan_btn = QPushButton('Load')
         self.load_scan_btn.clicked.connect(self.load_scan_from_mds)
 
-        self.ref_image_path_QLineEdit = QtGui.QLineEdit('reference image')
+        self.ref_image_path_QLineEdit = QLineEdit('reference image')
         self.ref_image_path_QLineEdit.setFixedWidth(350)
-        self.scan_number_text = QtGui.QLineEdit('3449')
+        self.scan_number_text = QLineEdit('3449')
 
         row = 0
 
@@ -616,17 +620,17 @@ class DPCWindow(QtGui.QMainWindow):
         layout.addWidget(self.roi_y2_widget, row, 3)
 
         # QGroupBox implementation for experiment parameters
-        self.experimentParaGbox = QtGui.QGroupBox("Experiment parameters")
-        self.experimentParaGridLayout = QtGui.QGridLayout()
+        self.experimentParaGbox = QGroupBox("Experiment parameters")
+        self.experimentParaGridLayout = QGridLayout()
         self.experimentParaGbox.setLayout(self.experimentParaGridLayout)
-        self.energy_lbl = QtGui.QLabel('Energy (keV)')
-        self.detector_sample_lbl = QtGui.QLabel('Detector-sample distance (m)')
-        self.x_step_size_lbl = QtGui.QLabel('X step size (um)')
-        self.y_step_size_lbl = QtGui.QLabel('Y step size (um)')
-        self.x_steps_number_lbl = QtGui.QLabel('Columns (x)')
-        self.y_steps_number_lbl = QtGui.QLabel('Rows (y)')
-        self.mosaic_x_size_lbl = QtGui.QLabel('Mosaic column number')
-        self.mosaic_y_size_lbl = QtGui.QLabel('Mosaic row number')
+        self.energy_lbl = QLabel('Energy (keV)')
+        self.detector_sample_lbl = QLabel('Detector-sample distance (m)')
+        self.x_step_size_lbl = QLabel('X step size (um)')
+        self.y_step_size_lbl = QLabel('Y step size (um)')
+        self.x_steps_number_lbl = QLabel('Columns (x)')
+        self.y_steps_number_lbl = QLabel('Rows (y)')
+        self.mosaic_x_size_lbl = QLabel('Mosaic column number')
+        self.mosaic_y_size_lbl = QLabel('Mosaic row number')
         self.experimentParaGridLayout.addWidget(self.energy_lbl, 0, 0)
         self.experimentParaGridLayout.addWidget(self.energy_widget, 0, 1)
         self.experimentParaGridLayout.addWidget(self.detector_sample_lbl, 0, 2)
@@ -647,13 +651,13 @@ class DPCWindow(QtGui.QMainWindow):
         """
         QGroupBox implementation for computation parameters
         """
-        self.computationParaGbox = QtGui.QGroupBox("Computation parameters")
-        self.computationParaGridLayout = QtGui.QGridLayout()
+        self.computationParaGbox = QGroupBox("Computation parameters")
+        self.computationParaGridLayout = QGridLayout()
         self.computationParaGbox.setLayout(self.computationParaGridLayout)
-        self.solver_method_lbl = QtGui.QLabel('Solver method')
-        self.processes_lbl = QtGui.QLabel('Processes')
-        self.random_processing_checkbox = QtGui.QCheckBox("Random mode")
-        self.hanging_checkbox = QtGui.QCheckBox("Hanging mode")
+        self.solver_method_lbl = QLabel('Solver method')
+        self.processes_lbl = QLabel('Processes')
+        self.random_processing_checkbox = QCheckBox("Random mode")
+        self.hanging_checkbox = QCheckBox("Hanging mode")
 
         layout = self.computationParaGridLayout
         layout.addWidget(self.solver_method_lbl, 0, 0)
@@ -668,18 +672,18 @@ class DPCWindow(QtGui.QMainWindow):
         """
         QGroupBox implementation for console information
         """
-        self.consoleInfoGbox = QtGui.QGroupBox("Console information")
-        self.consoleInfoGridLayout = QtGui.QGridLayout()
+        self.consoleInfoGbox = QGroupBox("Console information")
+        self.consoleInfoGridLayout = QGridLayout()
         self.consoleInfoGbox.setLayout(self.consoleInfoGridLayout)
-        self.console_info = QtGui.QTextEdit(self)
+        self.console_info = QTextEdit(self)
         self.console_info.setReadOnly(True)
         self.consoleInfoGridLayout.addWidget(self.console_info)
 
-        self.background_remove_qbox = QtGui.QGroupBox("Remove background")
-        self.background_remove_layout = QtGui.QGridLayout()
+        self.background_remove_qbox = QGroupBox("Remove background")
+        self.background_remove_layout = QGridLayout()
         self.background_remove_qbox.setLayout(self.background_remove_layout)
-        self.strap_start_label = QtGui.QLabel('Start')
-        self.strap_end_label = QtGui.QLabel('End')
+        self.strap_start_label = QLabel('Start')
+        self.strap_end_label = QLabel('End')
         self.background_remove_layout.addWidget(self.strap_start_label, 0, 0)
         self.background_remove_layout.addWidget(self.strap_start, 0, 1)
         self.background_remove_layout.addWidget(self.strap_end_label, 0, 2)
@@ -691,70 +695,71 @@ class DPCWindow(QtGui.QMainWindow):
 
         self.canvas = MplCanvas(width=10, height=12, dpi=50)
         self.toolbar = NavigationToolbar(self.canvas, self)
-        self.image_vis_qbox = QtGui.QGroupBox("Image visualization")
-        self.image_vis_layout = QtGui.QGridLayout()
+        self.image_vis_qbox = QGroupBox("Image visualization")
+        self.image_vis_layout = QGridLayout()
         self.image_vis_qbox.setLayout(self.image_vis_layout)
         self.image_vis_layout.addWidget(self.toolbar, 0, 0)
         self.image_vis_layout.addWidget(self.color_map, 0, 1)
         
-        line = QtGui.QFrame()
-        line.setFrameShape(QtGui.QFrame.HLine)
-        line.setFrameShadow(QtGui.QFrame.Sunken)         
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
         self.image_vis_layout.addWidget(line, 1,0) 
-        line = QtGui.QFrame()
-        line.setFrameShape(QtGui.QFrame.HLine)
-        line.setFrameShadow(QtGui.QFrame.Sunken)         
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
         self.image_vis_layout.addWidget(line, 1,1) 
         
-        hboxcb = QtGui.QHBoxLayout()
-        self.cb_histeq = QtGui.QCheckBox('Histogram Equalization', self)
+        hboxcb = QHBoxLayout()
+        self.cb_histeq = QCheckBox('Histogram Equalization', self)
         self.cb_histeq.setChecked(False)
         self.cb_histeq.stateChanged.connect(self.OnCBHistEqualization)
         hboxcb.addWidget(self.cb_histeq)
         
-        self.cb_resid = QtGui.QCheckBox('Show Residuals', self)
+        self.cb_resid = QCheckBox('Show Residuals', self)
         self.cb_resid.setChecked(False)
         self.cb_resid.stateChanged.connect(self.OnCBShowResiduals)
         hboxcb.addWidget(self.cb_resid)        
         
         self.image_vis_layout.addLayout(hboxcb, 2, 1)          
         
-        hboxslider = QtGui.QHBoxLayout()
-        hboxslider.addWidget( QtGui.QLabel('Contrast'))
-        self.slider_constrast = QtGui.QSlider(QtCore.Qt.Horizontal)
+        hboxslider = QHBoxLayout()
+        hboxslider.addWidget( QLabel('Contrast'))
+        self.slider_constrast = QSlider(QtCore.Qt.Horizontal)
         self.slider_constrast.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.slider_constrast.setRange(0, 25)
         self.slider_constrast.setValue(0)
-        self.slider_constrast.setTickPosition(QtGui.QSlider.TicksBelow)
+        self.slider_constrast.setTickPosition(QSlider.TicksBelow)
         self.slider_constrast.setTickInterval(5)
         hboxslider.addWidget(self.slider_constrast)
         self.slider_constrast.valueChanged[int].connect(self.OnContrastSlider)
         self.image_vis_layout.addLayout(hboxslider,2,0)
 
-        self.canvas_QGridLayout = QtGui.QGridLayout()
-        self.canvas_widget = QtGui.QWidget()
+        self.canvas_QGridLayout = QGridLayout()
+        self.canvas_widget = QWidget()
         self.canvas_widget.setLayout(self.canvas_QGridLayout)
         self.canvas_QGridLayout.addWidget(self.canvas, 0, 0, 1, 2)
         self.canvas_QGridLayout.addWidget(self.image_vis_qbox, 1, 0)
         self.canvas_QGridLayout.addWidget(self.background_remove_qbox, 1, 1)
 
-        self.crop_widget = QtGui.QWidget()
-        self.crop_layout = QtGui.QGridLayout()
+        self.crop_widget = QWidget()
+        self.crop_layout = QGridLayout()
         self.crop_widget.setLayout(self.crop_layout)
         self.crop_canvas = MplCanvas(width=8, height=8, dpi=50)
         self.crop_fig = self.crop_canvas.figure
         self.crop_fig.subplots_adjust(top=0.95, left=0.05, right=0.95,
                                       bottom=0.05)
         self.crop_ax = self.crop_fig.add_subplot(111)
-        self.crop_ax.hold(False)
+        # self.crop_ax.hold(False)
+        self.crop_ax.cla()
         self.crop_layout.addWidget(self.crop_canvas, 0, 0, 1, 2)
         self.crop_layout.addWidget(self.ok_btn, 1, 0)
         self.crop_layout.addWidget(self.cancel_btn, 1, 1)
 
         self.last_path = ''
 
-        self.main_grid = QtGui.QGridLayout()
-        self.main_widget = QtGui.QWidget()
+        self.main_grid = QGridLayout()
+        self.main_widget = QWidget()
         self.main_widget.setLayout(self.main_grid)
         self.main_grid.addWidget(self.imageSettingGbox, 0, 0)
         self.main_grid.addWidget(self.experimentParaGbox, 1, 0)
@@ -763,32 +768,32 @@ class DPCWindow(QtGui.QMainWindow):
 
         # Add menu
         self.menu = self.menuBar()
-        self.save_result_tiff = QtGui.QAction('Export to .tiff', self)
+        self.save_result_tiff = QAction('Export to .tiff', self)
         self.save_result_tiff.setEnabled(False)
         self.save_result_tiff.triggered.connect(self.save_file_tiff)
-        self.save_result_txt = QtGui.QAction('Export to .txt', self)
+        self.save_result_txt = QAction('Export to .txt', self)
         self.save_result_txt.setEnabled(False)
         self.save_result_txt.triggered.connect(self.save_file_txt)
-        self.save_scan_params = QtGui.QAction('Save scan parameters', self)
+        self.save_scan_params = QAction('Save scan parameters', self)
         self.save_scan_params.triggered.connect(self.save_params_to_file)
-        self.load_scan_params = QtGui.QAction('Load scan parameters', self)
+        self.load_scan_params = QAction('Load scan parameters', self)
         self.load_scan_params.triggered.connect(self.load_params_from_file)
-        self.start_batch_gui = QtGui.QAction('Launch DPC Batch GUI', self)
+        self.start_batch_gui = QAction('Launch DPC Batch GUI', self)
         self.start_batch_gui.triggered.connect(self.launch_batch_gui)
-        self.reverse_x = QtGui.QAction('Reverse gx', self, checkable=True)
+        self.reverse_x = QAction('Reverse gx', self, checkable=True)
         self.reverse_x.triggered.connect(self.reverse_gx)
         self.reverse_x.setEnabled(False)
-        self.reverse_y = QtGui.QAction('Reverse gy', self, checkable=True)
+        self.reverse_y = QAction('Reverse gy', self, checkable=True)
         self.reverse_y.triggered.connect(self.reverse_gy)
         self.reverse_y.setEnabled(False)
-        self.swap_xy = QtGui.QAction('Swap x/y', self, checkable=True)
+        self.swap_xy = QAction('Swap x/y', self, checkable=True)
         self.swap_xy.triggered.connect(self.swap_x_y)
         self.swap_xy.setEnabled(False)
-        self.random_processing_opt = QtGui.QAction('Random mode', self,
+        self.random_processing_opt = QAction('Random mode', self,
                                                    checkable=True)
-        self.hanging_opt = QtGui.QAction('Hanging mode', self, checkable=True)
-        self.pyramid_scan = QtGui.QAction('Pyramid scan', self, checkable=True)
-        self.pad_recon = QtGui.QAction('Padding mode', self, checkable=True)
+        self.hanging_opt = QAction('Hanging mode', self, checkable=True)
+        self.pyramid_scan = QAction('Pyramid scan', self, checkable=True)
+        self.pad_recon = QAction('Padding mode', self, checkable=True)
         self.pad_recon.triggered.connect(self.padding_recon)
 
         file_menu = self.menu.addMenu('File')
@@ -807,7 +812,7 @@ class DPCWindow(QtGui.QMainWindow):
         option_menu.addAction(self.pad_recon)
 
         if hxntools is not None:
-            self.monitor_scans = QtGui.QAction('Monitor acquired scans', self,
+            self.monitor_scans = QAction('Monitor acquired scans', self,
                                                checkable=True)
             self.monitor_scans.triggered.connect(self.monitor_toggled)
             self.scan_monitor = HxnScanMonitor(uid_pv)
@@ -818,9 +823,9 @@ class DPCWindow(QtGui.QMainWindow):
         self.setCentralWidget(self.main_widget)
         self.setWindowTitle('DPC v.{0}'.format(version))
 
-        # QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
-        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Plastique'))
-        # QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('cde'))
+        # QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
+        QApplication.setStyle(QStyleFactory.create('Plastique'))
+        # QApplication.setStyle(QStyleFactory.create('cde'))
 
         self._init_settings()
 
@@ -1232,7 +1237,7 @@ class DPCWindow(QtGui.QMainWindow):
 
         if oned is True:
 
-            if cols_num is 1:
+            if cols_num == 1:
                 gs = gridspec.GridSpec(3, 1)
 
                 canvas.a_ax = a_ax = fig.add_subplot(gs[0, 0])
@@ -1401,7 +1406,8 @@ class DPCWindow(QtGui.QMainWindow):
         Change the contrast of the images
         """
         self.contrastval = self.slider_constrast.value()
-        if not self.running: self.update_display(a, gx, gy, phi, rx, ry)
+        if not self.running:
+            self.update_display(a, gx, gy, phi, rx, ry)
 
     def OnCBHistEqualization(self,state):
         """
@@ -1412,7 +1418,8 @@ class DPCWindow(QtGui.QMainWindow):
         else: 
             self.histequalization = False
         
-        if not self.running: self.update_display(a, gx, gy, phi, rx, ry)
+        if not self.running:
+            self.update_display(a, gx, gy, phi, rx, ry)
         
     def OnCBShowResiduals(self,state):
         """
@@ -1570,7 +1577,7 @@ class DPCWindow(QtGui.QMainWindow):
         '''
         delta = value / 10.0
         self.enh.enhance(delta).save('change_contrast.tif')
-        contrastImageTemp = QtGui.QPixmap('change_contrast.tif')
+        contrastImageTemp = QPixmap('change_contrast.tif')
         self.img_lbl.setPixmap(contrastImageTemp)
     """
 
@@ -1620,7 +1627,7 @@ class DPCWindow(QtGui.QMainWindow):
                                                          self.roi_img_max))
                 self.temp_lbl.clear()
 
-        return QtGui.QDialog.eventFilter(self, source, event)
+        return QDialog.eventFilter(self, source, event)
     """
 
     def select_path(self):
@@ -1952,8 +1959,8 @@ class DPCWindow(QtGui.QMainWindow):
                 logger.error('Reference image read failed', exc_info=ex)
                 msg = ('Could not read the reference image! \r (%s) %s'
                        '' % (ex.__class__.__name__, ex))
-                QtGui.QMessageBox.information(self, 'Read error', msg,
-                                              QtGui.QMessageBox.Ok)
+                QMessageBox.information(self, 'Read error', msg,
+                                              QMessageBox.Ok)
                 self.hide_btn.setChecked(False)
 
         else:
@@ -1965,16 +1972,16 @@ class DPCWindow(QtGui.QMainWindow):
         """
 
         if state == QtCore.Qt.Checked:
-            palette = QtGui.QPalette()
-            palette.setColor(QtGui.QPalette.Base, QtCore.Qt.lightGray)
+            palette = QPalette()
+            palette.setColor(QPalette.Base, QtCore.Qt.lightGray)
             self.ref_image_path_QLineEdit.setPalette(palette)
             self.select_ref_btn.setEnabled(False)
             self.ref_image_path_QLineEdit.setEnabled(False)
         else:
             self.select_ref_btn.setEnabled(True)
             self.ref_image_path_QLineEdit.setEnabled(True)
-            palette = QtGui.QPalette()
-            palette.setColor(QtGui.QPalette.Base, QtCore.Qt.white)
+            palette = QPalette()
+            palette.setColor(QPalette.Base, QtCore.Qt.white)
             self.ref_image_path_QLineEdit.setPalette(palette)
 
     def load_img_method(self):
@@ -2067,9 +2074,9 @@ class DPCWindow(QtGui.QMainWindow):
         size = None
         for i, (cm_name, fn) in enumerate(self.create_cmap_previews()):
             if os.path.exists(fn):
-                self.color_map.addItem(QtGui.QIcon(fn), cm_name)
+                self.color_map.addItem(QIcon(fn), cm_name)
                 if size is None:
-                    size = QtGui.QPixmap(fn).size()
+                    size = QPixmap(fn).size()
                     self.color_map.setIconSize(size)
             else:
                 self.color_map.addItem(cm_name)
@@ -2081,9 +2088,9 @@ class DPCWindow(QtGui.QMainWindow):
         size = None
         for i, (cm_name, fn) in enumerate(self.create_cmap_previews()):
             if os.path.exists(fn):
-                self.ref_color_map.addItem(QtGui.QIcon(fn), cm_name)
+                self.ref_color_map.addItem(QIcon(fn), cm_name)
                 if size is None:
-                    size = QtGui.QPixmap(fn).size()
+                    size = QPixmap(fn).size()
                     self.ref_color_map.setIconSize(size)
             else:
                 self.ref_color_map.addItem(cm_name)
@@ -2352,7 +2359,7 @@ class DPCWindow(QtGui.QMainWindow):
                         cmap=self._ref_color_map)
             self.ref_canvas.draw()
 
-        self.menu = menu = QtGui.QMenu()
+        self.menu = menu = QMenu()
         menu.addAction('&Add', add)
         menu.addAction('&Remove', remove)
         menu.addAction('&Clear', clear)
@@ -2454,8 +2461,8 @@ class DPCWindow(QtGui.QMainWindow):
 
             if self.scan is None:
                 not_loaded = 'Scan not loaded from metadatastore'
-                QtGui.QMessageBox.information(self, 'Load scan', not_loaded,
-                                              QtGui.QMessageBox.Ok)
+                QMessageBox.information(self, 'Load scan', not_loaded,
+                                              QMessageBox.Ok)
                 return
 
         self.reverse_x.setEnabled(False)
@@ -2533,7 +2540,7 @@ class DPCWindow(QtGui.QMainWindow):
 
     @QtCore.pyqtSlot(str)
     def on_myStream_message(self, message):
-        self.console_info.moveCursor(QtGui.QTextCursor.End)
+        self.console_info.moveCursor(QTextCursor.End)
         self.console_info.insertPlainText(message)
 
 
@@ -2544,7 +2551,7 @@ if __name__ == '__main__':
         uid_pv = 'XF:03IDC-ES{BS-Scan}UID-I'
 
     logging.basicConfig(level=logging.INFO)
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     # app.setAttribute(Qt.AA_X11InitThreads)
 
     window = DPCWindow()

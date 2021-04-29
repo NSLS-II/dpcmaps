@@ -37,7 +37,7 @@ def get_beta(xdata):
     length = len(xdata)
     try:
         beta = rss_cache[length]
-    except:
+    except Exception:
         #beta = 1j * (np.arange(length) + 1 - (np.floor(length / 2.0) + 1))
         beta = 1j * (np.arange(length) - np.floor(length / 2.0))
         rss_cache[length] = beta
@@ -411,7 +411,7 @@ def main(file_format='SOFC/SOFC_%05d.tif',
     
     dim = len(np.squeeze(gx).shape)
     
-    if dim is not 1:
+    if dim != 1:
         imsave('a.jpg', a)
         np.savetxt('a.txt', a)
         imsave('gx.jpg', gx)

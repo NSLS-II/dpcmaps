@@ -28,7 +28,7 @@ import h5py
 
 try:
     import filestore.api as fsapi
-except:
+except Exception:
     print ('Filestore is not available.')
 
 
@@ -178,7 +178,7 @@ def xj_test(filename, i, j, hang, roi=None, bad_pixels=[], **kwargs):
     try:
         im, fx, fy = load_file(filename, zip_file=zip_file, hang=hang, roi=roi,
                                bad_pixels=bad_pixels)
-    except Exception as ex:
+    except Exception:
         #print('Failed to load file %s: %s' % (filename, ex))
         return 0.0, 0.0, 0.0
 
@@ -451,7 +451,7 @@ def main(file_format='SOFC/SOFC_%05d.tif',
 
         # read the reference image hdf5: only one reference image
         reference, ref_fx, ref_fy = load_file_h5(datastack[first_image-1, :, :],
-                                              roi=roi, bad_pixels=bad_pixels)
+                                                 roi=roi, bad_pixels=bad_pixels)
 
     else:
         # read the reference image: only one reference image
@@ -593,7 +593,7 @@ def main(file_format='SOFC/SOFC_%05d.tif',
 
     dim = len(np.squeeze(gx).shape)
     if dim != 1:
-        if pad == True:
+        if pad is True:
             phi = recon(gx, gy, dx, dy, 3)
             print("Padding mode enabled!")
         else:
