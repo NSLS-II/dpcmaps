@@ -122,7 +122,7 @@ try:
     import hxntools.handlers
     from hxntools.scan_info import ScanInfo
     from hxntools.scan_monitor import HxnScanMonitor
-    from databroker import DataBroker
+    # from databroker import DataBroker
 except ImportError as ex:
     print("[!] Unable to import hxntools-related packages some features will " "be unavailable")
     print("[!] (import error: {})".format(ex))
@@ -1024,22 +1024,29 @@ class DPCWindow(QMainWindow):
         self.fs_key_cbox.setCurrentIndex(keys.index(key))
 
     def _load_scan_from_mds(self, scan_id, load_config=True):
-        hdrs = DataBroker(scan_id=scan_id)
-        if len(hdrs) == 1:
-            hdr = hdrs[0]
-        else:
 
-            def get_ts(hdr):
-                return datetime.fromtimestamp(hdr["start"]["time"])
+        # TODO: the original code allowed to pick a scan if multiple scan with the same UID was found
+        #    The code needs to be updated. Currently it is changed so that the latest scan
+        #    is always picked. This feature needs to be restored.
 
-            scans = ["{} ({})".format(get_ts(hdr), hdr["start"]["uid"]) for hdr in hdrs]
-            print("Multiple headers found...")
-            s, ok = QInputDialog.getItem(self, "Multiple scans", "Which scan?", scans, 0, False)
-            if ok:
-                index = scans.index(str(s))
-                hdr = hdrs[index]
-            else:
-                return
+        hdr = db[scan_id]
+
+        # hdrs = DataBroker(scan_id=scan_id)
+        # if len(hdrs) == 1:
+        #     hdr = hdrs[0]
+        # else:
+
+        # def get_ts(hdr):
+        #     return datetime.fromtimestamp(hdr["start"]["time"])
+
+        # scans = ["{} ({})".format(get_ts(hdr), hdr["start"]["uid"]) for hdr in hdrs]
+        # print("Multiple headers found...")
+        # s, ok = QInputDialog.getItem(self, "Multiple scans", "Which scan?", scans, 0, False)
+        # if ok:
+        #     index = scans.index(str(s))
+        #     hdr = hdrs[index]
+        # else:
+        #     return
 
         self.set_scan_from_scaninfo(ScanInfo(hdr), load_config=load_config)
 
