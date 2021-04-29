@@ -1,0 +1,11 @@
+[flake8]
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    versioneer.py,
+    bluesky_widgets/_version.py,
+    docs/source/conf.py
+    bluesky_widgets/examples/pyFAI_dialog.py,
+max-line-length = 115
