@@ -135,7 +135,7 @@ logger = logging.getLogger(__name__)
 get_save_filename = QFileDialog.getSaveFileName
 get_open_filename = QFileDialog.getOpenFileName
 
-version = "1.0.10"
+version = "1.1.0"
 
 
 SOLVERS = [
@@ -1024,10 +1024,6 @@ class DPCWindow(QMainWindow):
         self.fs_key_cbox.setCurrentIndex(keys.index(key))
 
     def _load_scan_from_mds(self, scan_id, load_config=True):
-
-        # TODO: the original code allowed to pick a scan if multiple scan with the same UID was found
-        #    The code needs to be updated. Currently it is changed so that the latest scan
-        #    is always picked. This feature needs to be restored.
 
         hdrs = list(db(scan_id=scan_id))
 
