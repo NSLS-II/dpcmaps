@@ -92,6 +92,7 @@ import pyspecfile
 import json
 import pyxrf
 
+beamline_name = ""
 
 # The following code is borrowed from PyXRF. It supposed to determine beamline name
 #   based on PyXRF configuration file '/etc/pyxrf/pyxrf.json'
@@ -129,7 +130,9 @@ except ImportError as ex:
     print("[!] (import error: {})".format(ex))
     hxntools = None
 else:
-    hxntools.handlers.register(db)
+    if beamline_name == "HXN":
+        # It fails at SRX because of duplicate handlers
+        hxntools.handlers.register(db)
 
 
 logger = logging.getLogger(__name__)
