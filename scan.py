@@ -49,7 +49,7 @@ def get_scan_info(header):
     pyramid = False
 
     if scan_type in fly_scans:
-        logger.debug("Scan %s (%s) is a fly scan (%s)", start_doc.scan_id, start_doc.uid, scan_type)
+        logger.debug("Scan %s (%s) is a fly scan (%s)", start_doc["scan_id"], start_doc["uid"], scan_type)
         dimensions = start_doc["dimensions"]
         motors = start_doc["axes"]
         pyramid = start_doc["fly_type"] == "pyramid"
@@ -61,7 +61,7 @@ def get_scan_info(header):
             except (KeyError, ValueError):
                 pass
     elif scan_type in step_2d:
-        logger.debug("Scan %s (%s) is an ND scan (%s)", start_doc.scan_id, start_doc.uid, scan_type)
+        logger.debug("Scan %s (%s) is an ND scan (%s)", start_doc["scan_id"], start_doc["uid"], scan_type)
         # 2D mesh scan
         scan_args = _eval_scan_args(scan_args["args"])
         motors = [arg.name for arg in scan_args[::5]]
@@ -70,7 +70,7 @@ def get_scan_info(header):
         range1 = scan_args[2::5]
         range_ = list(zip(range0, range1))
     elif scan_type in step_1d or "num" in start_doc:
-        logger.debug("Scan %s (%s) is a 1D scan (%s)", start_doc.scan_id, start_doc.uid, scan_type)
+        logger.debug("Scan %s (%s) is a 1D scan (%s)", start_doc["scan_id"], start_doc["uid"], scan_type)
         # 1D scans
         dimensions = [int(scan_args["num"])]
         try:
