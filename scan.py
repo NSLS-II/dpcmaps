@@ -78,7 +78,7 @@ def get_scan_info(header):
         except Exception:
             motors = []
     else:
-        msg = "Unrecognized scan type (uid={} {})".format(start_doc.uid, scan_type)
+        msg = "Unrecognized scan type (uid={} {})".format(start_doc["uid"], scan_type)
         raise RuntimeError(msg)
 
     num = np.product(dimensions)
