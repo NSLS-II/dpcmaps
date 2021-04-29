@@ -1029,24 +1029,23 @@ class DPCWindow(QMainWindow):
         #    The code needs to be updated. Currently it is changed so that the latest scan
         #    is always picked. This feature needs to be restored.
 
-        hdr = db[scan_id]
+        hdrs = list(db(scan_id=scan_id))
 
-        # hdrs = DataBroker(scan_id=scan_id)
-        # if len(hdrs) == 1:
-        #     hdr = hdrs[0]
-        # else:
+        if len(hdrs) == 1:
+            hdr = hdrs[0]
 
-        # def get_ts(hdr):
-        #     return datetime.fromtimestamp(hdr["start"]["time"])
+        else:
+            def get_ts(hdr):
+                return datetime.fromtimestamp(hdr["start"]["time"])
 
-        # scans = ["{} ({})".format(get_ts(hdr), hdr["start"]["uid"]) for hdr in hdrs]
-        # print("Multiple headers found...")
-        # s, ok = QInputDialog.getItem(self, "Multiple scans", "Which scan?", scans, 0, False)
-        # if ok:
-        #     index = scans.index(str(s))
-        #     hdr = hdrs[index]
-        # else:
-        #     return
+            scans = ["{} ({})".format(get_ts(hdr), hdr["start"]["uid"]) for hdr in hdrs]
+            print("Multiple headers found...")
+            s, ok = QInputDialog.getItem(self, "Multiple scans", "Which scan?", scans, 0, False)
+            if ok:
+                index = scans.index(str(s))
+                hdr = hdrs[index]
+            else:
+                return
 
         self.set_scan_from_scaninfo(ScanInfo(hdr), load_config=load_config)
 
