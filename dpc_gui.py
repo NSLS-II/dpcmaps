@@ -96,25 +96,25 @@ import pyxrf
 # The following code is borrowed from PyXRF. It supposed to determine beamline name
 #   based on PyXRF configuration file '/etc/pyxrf/pyxrf.json'
 try:
-    config_path = '/etc/pyxrf/pyxrf.json'
-    with open(config_path, 'r') as beamline_pyxrf:
+    config_path = "/etc/pyxrf/pyxrf.json"
+    with open(config_path, "r") as beamline_pyxrf:
         beamline_config_pyxrf = json.load(beamline_pyxrf)
-        beamline_name = beamline_config_pyxrf['beamline_name']
-    if beamline_name == 'HXN':
+        beamline_name = beamline_config_pyxrf["beamline_name"]
+    if beamline_name == "HXN":
         from pyxrf.db_config.hxn_db_config import db
-    elif beamline_name == 'SRX':
+    elif beamline_name == "SRX":
         from pyxrf.db_config.srx_db_config import db
-    elif beamline_name == 'XFM':
+    elif beamline_name == "XFM":
         from pyxrf.db_config.xfm_db_config import db
-    elif beamline_name == 'TES':
+    elif beamline_name == "TES":
         from pyxrf.db_config.tes_db_config import db
     else:
         db = None
         db_analysis = None
-        print('Beamline Database is not used in pyxrf.')
+        print("Beamline Database is not used in pyxrf.")
 except IOError:
     db = None
-    print('Beamline Database is not used in pyxrf.')
+    print("Beamline Database is not used in pyxrf.")
 
 
 try:
@@ -122,6 +122,7 @@ try:
     import hxntools.handlers
     from hxntools.scan_info import ScanInfo
     from hxntools.scan_monitor import HxnScanMonitor
+
     # from databroker import DataBroker
 except ImportError as ex:
     print("[!] Unable to import hxntools-related packages some features will " "be unavailable")
@@ -1031,6 +1032,7 @@ class DPCWindow(QMainWindow):
             hdr = hdrs[0]
 
         else:
+
             def get_ts(hdr):
                 return datetime.fromtimestamp(hdr["start"]["time"])
 
