@@ -863,7 +863,7 @@ class DPCWindow(QMainWindow):
         if hxntools is not None:
             self.monitor_scans = QAction("Monitor acquired scans", self, checkable=True)
             self.monitor_scans.triggered.connect(self.monitor_toggled)
-            self.scan_monitor = HxnScanMonitor(uid_pv)
+            self.scan_monitor = HxnScanMonitor(uid_pv, db)
             self.scan_monitor.connect("start", self.bs_scan_started)
             self.scan_monitor.connect("stop", self.bs_scan_finished)
             option_menu.addAction(self.monitor_scans)
