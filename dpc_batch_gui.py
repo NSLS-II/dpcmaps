@@ -379,7 +379,7 @@ class MainFrame(QMainWindow):
 
     # ----------------------------------------------------------------------
     def OnSelectParamFile(self):
-        paramfile = QFileDialog.getOpenFileName(self, "Choose a parameter file", "", "Text file (*.txt)")
+        paramfile = QFileDialog.getOpenFileName(self, "Choose a parameter file", "", "Text file (*.txt)")[0]
         self.tc_paramfile.setText(str(os.path.abspath(paramfile)))
 
     # ----------------------------------------------------------------------
@@ -416,7 +416,7 @@ class MainFrame(QMainWindow):
     # ----------------------------------------------------------------------
     def OnSave(self, evt):
 
-        scriptfile = QFileDialog.getSaveFileName(self, "Choose a script file", "", "Text file (*.txt)")
+        scriptfile = QFileDialog.getSaveFileName(self, "Choose a script file", "", "Text file (*.txt)")[0]
 
         if scriptfile == "":
             return

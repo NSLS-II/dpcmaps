@@ -1630,7 +1630,7 @@ class DPCWindow(QMainWindow):
         Select path and initiate file format for the data
 
         """
-        fname = get_open_filename(self, "Open file", "/home")
+        fname = get_open_filename(self, "Open file", "/home")[0]
         fname = str(fname)
         basename, extension = os.path.splitext(fname)
         if extension == ".h5":
@@ -1662,7 +1662,7 @@ class DPCWindow(QMainWindow):
         """
         global a, gx, gy, phi, rx, ry
         default_path = str(self.save_path_widget.text())
-        path = get_save_filename(self, "Select path", default_path)
+        path = get_save_filename(self, "Select path", default_path)[0]
         path = str(path)
         self.save_path_widget.setText(path)
         if path != "":
@@ -1692,7 +1692,7 @@ class DPCWindow(QMainWindow):
 
     def save_params_to_file(self):
         self.save_settings()
-        path = get_save_filename(self, "Select path", "", ".txt")
+        path = get_save_filename(self, "Select path", "", ".txt")[0]
         path = str(path)
         if path != "":
             print("Saving parameters to {0}".format(path))
@@ -1726,7 +1726,7 @@ class DPCWindow(QMainWindow):
 
     def load_params_from_file(self):
 
-        path = get_open_filename(self, "Select path", "", "Parameter files (*.txt);;")
+        path = get_open_filename(self, "Select path", "", "Parameter files (*.txt);;")[0]
         path = str(path)
         if path != "":
             print("Loading parameters from {0}".format(path))
@@ -1910,7 +1910,7 @@ class DPCWindow(QMainWindow):
         Select the reference image and record its location and name
 
         """
-        fname = get_open_filename(self, "Open file", "/home")
+        fname = get_open_filename(self, "Open file", "/home")[0]
         fname = str(fname)
         if fname != "":
             self.ref_image_path_QLineEdit.setText(fname)
@@ -2347,7 +2347,7 @@ class DPCWindow(QMainWindow):
         menu.popup(self.bad_pixels_widget.mapToGlobal(pos))
 
     def load_from_spec_scan(self):
-        filename = get_open_filename(self, "Scan filename", self.last_path, "*.spec")
+        filename = get_open_filename(self, "Scan filename", self.last_path, "*.spec")[0]
         if not filename:
             return
 
@@ -2504,7 +2504,7 @@ class DPCWindow(QMainWindow):
             self.set_running(False)
 
     def save(self):
-        filename = get_save_filename(self, "Save filename prefix", "", "")
+        filename = get_save_filename(self, "Save filename prefix", "", "")[0]
         if not filename:
             return
 
