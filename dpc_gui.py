@@ -1873,7 +1873,9 @@ class DPCWindow(QMainWindow):
             pass
 
     def launch_batch_gui(self):
-        subprocess.Popen(["python", "dpc_batch_gui.py"])
+        dir_name, _ = os.path.split(__file__)
+        fln = os.path.join(dir_name, "dpc_batch_gui.py")
+        subprocess.Popen(["python", fln])
 
     def swap_x_y(self):
         global a, gx, gy, phi, rx, ry
