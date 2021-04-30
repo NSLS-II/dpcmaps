@@ -20,10 +20,13 @@ except ImportError as ex:
     print("[!] (import error: {})".format(ex))
     havetiff = False
 
-try:
-    from databroker import db, get_events
-except ImportError as ex:
-    print("[!] Unable to import DataBroker library.")
+
+from db_config.db_config import db
+
+# try:
+#     from databroker import db, get_events
+# except ImportError as ex:
+#     print("[!] Unable to import DataBroker library.")
 
 try:
     import hxntools
@@ -34,8 +37,6 @@ except ImportError as ex:
     print("[!] Unable to import hxntools library.")
     print("[!] (import error: {})".format(ex))
     hxntools = None
-else:
-    hxntools.handlers.register()
 
 
 import dpc_kernel as dpc
