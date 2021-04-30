@@ -26,10 +26,11 @@ from six import StringIO
 import load_timepix
 import h5py
 
-try:
-    import filestore.api as fsapi
-except Exception:
-    print("Filestore is not available.")
+from db_config.db_config import db
+# try:
+#     import filestore.api as fsapi
+# except Exception:
+#     print("Filestore is not available.")
 
 
 rss_cache = {}
@@ -75,8 +76,11 @@ def load_image_filestore(datum_id):
     if datum_id is None:
         raise IOError("Image doesn't exist yet")
 
+    # raise Exception(f"Reading image: datum_id = {datum_id}")
+
     try:
-        return np.asarray(fsapi.retrieve(datum_id)).squeeze()
+        return np.asarray(db.reg.retrieve(datum_id)).squeeze()
+        # return np.asarray(fsapi.retrieve(datum_id)).squeeze()
     except Exception as ex:
         print("Filestore load failed (datum={}): ({}) {}" "".format(datum_id, ex.__class__.__name__, ex))
         raise
