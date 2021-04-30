@@ -45,9 +45,10 @@ version = "0.1.0"
 
 
 def load_scan_from_mds(scan_id):
-    hdrs = DataBroker(scan_id=int(scan_id))
-    if len(hdrs) == 1:
-        hdr = hdrs[0]
+    hdrs = list(db(scan_id=scan_id))
+    if len(hdrs) > 1:
+        print(f"Multiple scans are available for scan_id {scan_id}. Processing the latest scan ...")
+    hdr = hdrs[0]
 
     return ScanInfo(hdr)
 
