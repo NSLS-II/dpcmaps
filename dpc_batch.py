@@ -606,7 +606,8 @@ def run_batch(script_file):
             dpc_settings["use_mds"] = True
 
             try:
-                mds_scan = load_scan_from_mds(calc_scan_numbers[i_scan])
+                scan_id = int(calc_scan_numbers[i_scan])
+                mds_scan = load_scan_from_mds(scan_id)
             except Exception as ex:
                 print(
                     "Filestore load failed (datum={}): ({}) {}"
