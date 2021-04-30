@@ -1235,7 +1235,7 @@ class DPCWindow(QMainWindow):
 
         tfont = {"size": "28", "weight": "semibold"}
 
-        plt.hold(True)
+        # plt.hold(True)
         main = DPCWindow.instance
         canvas = self.canvas
         fig = canvas.figure
