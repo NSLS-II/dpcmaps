@@ -20,10 +20,13 @@ except ImportError as ex:
     print("[!] (import error: {})".format(ex))
     havetiff = False
 
-try:
-    from databroker import db, get_events
-except ImportError as ex:
-    print("[!] Unable to import DataBroker library.")
+
+from db_config.db_config import db
+
+# try:
+#     from databroker import db, get_events
+# except ImportError as ex:
+#     print("[!] Unable to import DataBroker library.")
 
 try:
     import hxntools
@@ -34,8 +37,6 @@ except ImportError as ex:
     print("[!] Unable to import hxntools library.")
     print("[!] (import error: {})".format(ex))
     hxntools = None
-else:
-    hxntools.handlers.register()
 
 
 import dpc_kernel as dpc
@@ -44,9 +45,10 @@ version = "0.1.0"
 
 
 def load_scan_from_mds(scan_id):
-    hdrs = DataBroker(scan_id=int(scan_id))
-    if len(hdrs) == 1:
-        hdr = hdrs[0]
+    hdrs = list(db(scan_id=scan_id))
+    if len(hdrs) > 1:
+        print(f"Multiple scans are available for scan_id {scan_id}. Processing the latest scan ...")
+    hdr = hdrs[0]
 
     return ScanInfo(hdr)
 
@@ -604,7 +606,8 @@ def run_batch(script_file):
             dpc_settings["use_mds"] = True
 
             try:
-                mds_scan = load_scan_from_mds(calc_scan_numbers[i_scan])
+                scan_id = int(calc_scan_numbers[i_scan])
+                mds_scan = load_scan_from_mds(scan_id)
             except Exception as ex:
                 print(
                     "Filestore load failed (datum={}): ({}) {}"

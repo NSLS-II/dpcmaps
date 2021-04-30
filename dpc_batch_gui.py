@@ -6,10 +6,24 @@ Created on Feb 23, 2017
 from __future__ import division
 import sys
 import os
-import numpy as np
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import Qt, QCoreApplication
+from PyQt5.QtWidgets import (
+    QMainWindow,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QGroupBox,
+    QCheckBox,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QFileDialog,
+    QMessageBox,
+    QApplication,
+    QTextEdit,
+)
+from PyQt5.QtGui import QPalette, QColor, QIntValidator, QTextCursor
+from PyQt5.QtCore import Qt, QCoreApplication, QSettings
 
 
 import dpc_batch as dpc
@@ -17,9 +31,9 @@ import dpc_batch as dpc
 version = "1.0.2"
 
 # #----------------------------------------------------------------------
-# class EmittingStream(QtCore.QObject):
+# class EmittingStream(QObject):
 #
-#     textWritten = QtCore.pyqtSignal(str)
+#     textWritten = pyqtSignal(str)
 #
 #     def write(self, text):
 #         self.textWritten.emit(str(text))
@@ -27,11 +41,11 @@ version = "1.0.2"
 """ ------------------------------------------------------------------------------------------------"""
 
 
-class MainFrame(QtGui.QMainWindow):
+class MainFrame(QMainWindow):
     def __init__(self):
         super(MainFrame, self).__init__()
 
-        self.settings = QtCore.QSettings("BNL", "DPC-BATCH-GUI")
+        self.settings = QSettings("BNL", "DPC-BATCH-GUI")
 
         self.script_file = ""
 
@@ -137,29 +151,29 @@ class MainFrame(QtGui.QMainWindow):
         self.resize(600, 720)
         self.setWindowTitle("DPC Batch v.{}".format(version))
 
-        pal = QtGui.QPalette()
+        pal = QPalette()
         self.setAutoFillBackground(True)
-        pal.setColor(QtGui.QPalette.Window, QtGui.QColor("white"))
+        pal.setColor(QPalette.Window, QColor("white"))
         self.setPalette(pal)
 
-        self.mainWidget = QtGui.QWidget(self)
+        self.mainWidget = QWidget(self)
         self.setCentralWidget(self.mainWidget)
 
-        vbox = QtGui.QVBoxLayout(self.mainWidget)
+        vbox = QVBoxLayout(self.mainWidget)
         vbox.setContentsMargins(20, 10, 20, 20)
 
-        sizer1 = QtGui.QGroupBox("Scans")
-        vbox1 = QtGui.QVBoxLayout()
+        sizer1 = QGroupBox("Scans")
+        vbox1 = QVBoxLayout()
 
-        self.cb_usedatastore = QtGui.QCheckBox("  Read the Data from DataStore", self)
+        self.cb_usedatastore = QCheckBox("  Read the Data from DataStore", self)
         self.cb_usedatastore.setChecked(self.read_data_from_datastore)
         self.cb_usedatastore.stateChanged.connect(self.OnUseDataStore)
         vbox1.addWidget(self.cb_usedatastore)
 
-        hbox = QtGui.QHBoxLayout()
-        l1 = QtGui.QLabel("Scan numbers & ranges \t", self)
-        self.tc_scan_range = QtGui.QLineEdit(self)
-        self.tc_scan_range.setAlignment(QtCore.Qt.AlignLeft)
+        hbox = QHBoxLayout()
+        l1 = QLabel("Scan numbers & ranges \t", self)
+        self.tc_scan_range = QLineEdit(self)
+        self.tc_scan_range.setAlignment(Qt.AlignLeft)
         self.tc_scan_range.setText(self.scan_range)
         l1.setToolTip("Set scan numbers and ranges. Example: 2, 3-5, 7-15, 23, 30-55")
         self.tc_scan_range.setToolTip("Set scan numbers and ranges. Example: 2, 3-5, 7-15, 23, 30-55")
@@ -167,21 +181,21 @@ class MainFrame(QtGui.QMainWindow):
         hbox.addWidget(self.tc_scan_range)
         vbox1.addLayout(hbox)
 
-        hbox = QtGui.QHBoxLayout()
-        l2 = QtGui.QLabel("Process every n-th scan \t", self)
-        self.ntc_every_n = QtGui.QLineEdit(self)
-        self.ntc_every_n.setValidator(QtGui.QIntValidator(1, 99999, self))
-        self.ntc_every_n.setAlignment(QtCore.Qt.AlignRight)
+        hbox = QHBoxLayout()
+        l2 = QLabel("Process every n-th scan \t", self)
+        self.ntc_every_n = QLineEdit(self)
+        self.ntc_every_n.setValidator(QIntValidator(1, 99999, self))
+        self.ntc_every_n.setAlignment(Qt.AlignRight)
         self.ntc_every_n.setText(str(self.every_n))
         hbox.addWidget(l2)
         hbox.addWidget(self.ntc_every_n)
         hbox.addStretch(1)
         vbox1.addLayout(hbox)
 
-        # hbox = QtGui.QHBoxLayout()
-        # l1 = QtGui.QLabel('Scan numbers \t', self)
-        # self.tc_scans = QtGui.QLineEdit(self)
-        # self.tc_scans.setAlignment(QtCore.Qt.AlignLeft)
+        # hbox = QHBoxLayout()
+        # l1 = QLabel('Scan numbers \t', self)
+        # self.tc_scans = QLineEdit(self)
+        # self.tc_scans.setAlignment(Qt.AlignLeft)
         # self.tc_scans.setText(str(self.scan_nums))
         # l1.setToolTip('Set scan numbers. Example: 1, 24, 26')
         # self.tc_scans.setToolTip('Set scan numbers. Example: 1, 24, 26')
@@ -189,33 +203,33 @@ class MainFrame(QtGui.QMainWindow):
         # hbox.addWidget(self.tc_scans)
         # vbox1.addLayout(hbox)
 
-        hbox = QtGui.QHBoxLayout()
-        l1 = QtGui.QLabel("Filestore key \t", self)
-        self.tc_fskey = QtGui.QLineEdit(self)
-        self.tc_fskey.setAlignment(QtCore.Qt.AlignLeft)
+        hbox = QHBoxLayout()
+        l1 = QLabel("Filestore key \t", self)
+        self.tc_fskey = QLineEdit(self)
+        self.tc_fskey.setAlignment(Qt.AlignLeft)
         self.tc_fskey.setText(self.filestore_key)
         hbox.addWidget(l1)
         hbox.addWidget(self.tc_fskey)
         vbox1.addLayout(hbox)
 
-        hbox = QtGui.QHBoxLayout()
-        l1 = QtGui.QLabel("Data Directory \t", self)
-        self.tc_datadir = QtGui.QLineEdit(self)
-        self.tc_datadir.setAlignment(QtCore.Qt.AlignLeft)
+        hbox = QHBoxLayout()
+        l1 = QLabel("Data Directory \t", self)
+        self.tc_datadir = QLineEdit(self)
+        self.tc_datadir.setAlignment(Qt.AlignLeft)
         l1.setToolTip("Data Direcory if not using datastore.")
         self.tc_datadir.setToolTip("Data Direcory if not using datastore.")
         self.tc_datadir.setText(self.data_directory)
-        self.button_d1 = QtGui.QPushButton("Browse")
+        self.button_d1 = QPushButton("Browse")
         self.button_d1.clicked.connect(self.OnSelectDataDir)
         hbox.addWidget(l1)
         hbox.addWidget(self.tc_datadir)
         hbox.addWidget(self.button_d1)
         vbox1.addLayout(hbox)
 
-        hbox = QtGui.QHBoxLayout()
-        l1 = QtGui.QLabel("File format \t", self)
-        self.tc_format = QtGui.QLineEdit(self)
-        self.tc_format.setAlignment(QtCore.Qt.AlignLeft)
+        hbox = QHBoxLayout()
+        l1 = QLabel("File format \t", self)
+        self.tc_format = QLineEdit(self)
+        self.tc_format.setAlignment(Qt.AlignLeft)
         self.tc_format.setToolTip("Data file format.")
         self.tc_format.setText(self.file_format)
         hbox.addWidget(l1)
@@ -225,19 +239,19 @@ class MainFrame(QtGui.QMainWindow):
         sizer1.setLayout(vbox1)
         vbox.addWidget(sizer1)
 
-        sizer3 = QtGui.QGroupBox("Scan Parameters")
-        vbox3 = QtGui.QVBoxLayout()
+        sizer3 = QGroupBox("Scan Parameters")
+        vbox3 = QVBoxLayout()
 
-        self.cb_paramsdatastore = QtGui.QCheckBox("  Read the Parameters from DataStore", self)
+        self.cb_paramsdatastore = QCheckBox("  Read the Parameters from DataStore", self)
         self.cb_paramsdatastore.setChecked(self.load_params_from_broker)
         vbox3.addWidget(self.cb_paramsdatastore)
 
-        hbox = QtGui.QHBoxLayout()
-        l1 = QtGui.QLabel("Parameter file \t", self)
-        self.tc_paramfile = QtGui.QLineEdit(self)
-        self.tc_paramfile.setAlignment(QtCore.Qt.AlignLeft)
+        hbox = QHBoxLayout()
+        l1 = QLabel("Parameter file \t", self)
+        self.tc_paramfile = QLineEdit(self)
+        self.tc_paramfile.setAlignment(Qt.AlignLeft)
         self.tc_paramfile.setText(self.parameter_file)
-        button_d3 = QtGui.QPushButton("Select")
+        button_d3 = QPushButton("Select")
         button_d3.clicked.connect(self.OnSelectParamFile)
         hbox.addWidget(l1)
         hbox.addWidget(self.tc_paramfile)
@@ -247,14 +261,14 @@ class MainFrame(QtGui.QMainWindow):
         sizer3.setLayout(vbox3)
         vbox.addWidget(sizer3)
 
-        sizer2 = QtGui.QGroupBox("Run configurations")
-        vbox2 = QtGui.QVBoxLayout()
-        hbox = QtGui.QHBoxLayout()
+        sizer2 = QGroupBox("Run configurations")
+        vbox2 = QVBoxLayout()
+        hbox = QHBoxLayout()
 
-        l2 = QtGui.QLabel("Processes  \t", self)
-        self.ntc_processes = QtGui.QLineEdit(self)
-        self.ntc_processes.setValidator(QtGui.QIntValidator(1, 64, self))
-        self.ntc_processes.setAlignment(QtCore.Qt.AlignRight)
+        l2 = QLabel("Processes  \t", self)
+        self.ntc_processes = QLineEdit(self)
+        self.ntc_processes.setValidator(QIntValidator(1, 64, self))
+        self.ntc_processes.setAlignment(Qt.AlignRight)
         self.ntc_processes.setText(str(self.processes))
         hbox.addWidget(l2)
         hbox.addWidget(self.ntc_processes)
@@ -264,42 +278,42 @@ class MainFrame(QtGui.QMainWindow):
         sizer2.setLayout(vbox2)
         vbox.addWidget(sizer2)
 
-        sizer4 = QtGui.QGroupBox("Saving Results")
-        vbox4 = QtGui.QVBoxLayout()
-        hbox = QtGui.QHBoxLayout()
+        sizer4 = QGroupBox("Saving Results")
+        vbox4 = QVBoxLayout()
+        hbox = QHBoxLayout()
 
-        hbox = QtGui.QHBoxLayout()
-        l1 = QtGui.QLabel("Save Directory \t", self)
-        self.tc_savedir = QtGui.QLineEdit(self)
-        self.tc_savedir.setAlignment(QtCore.Qt.AlignLeft)
+        hbox = QHBoxLayout()
+        l1 = QLabel("Save Directory \t", self)
+        self.tc_savedir = QLineEdit(self)
+        self.tc_savedir.setAlignment(Qt.AlignLeft)
         l1.setToolTip("Data Direcory where results will be stored.")
         self.tc_savedir.setToolTip("Data Direcory where results will be stored.")
         self.tc_savedir.setText(self.save_dir)
-        button_d2 = QtGui.QPushButton("Browse")
+        button_d2 = QPushButton("Browse")
         button_d2.clicked.connect(self.OnSelectSaveDir)
         hbox.addWidget(l1)
         hbox.addWidget(self.tc_savedir)
         hbox.addWidget(button_d2)
         vbox4.addLayout(hbox)
 
-        hbox = QtGui.QHBoxLayout()
-        l1 = QtGui.QLabel("Save Filename \t", self)
-        self.tc_savefn = QtGui.QLineEdit(self)
-        self.tc_savefn.setAlignment(QtCore.Qt.AlignLeft)
+        hbox = QHBoxLayout()
+        l1 = QLabel("Save Filename \t", self)
+        self.tc_savefn = QLineEdit(self)
+        self.tc_savefn.setAlignment(Qt.AlignLeft)
         self.tc_savefn.setText(self.save_filename)
         hbox.addWidget(l1)
         hbox.addWidget(self.tc_savefn)
         vbox4.addLayout(hbox)
 
-        self.cb_savepng = QtGui.QCheckBox("  Save results as .png files", self)
+        self.cb_savepng = QCheckBox("  Save results as .png files", self)
         self.cb_savepng.setChecked(self.save_png)
         vbox4.addWidget(self.cb_savepng)
 
-        self.cb_savetxt = QtGui.QCheckBox("  Save results as .txt files", self)
+        self.cb_savetxt = QCheckBox("  Save results as .txt files", self)
         self.cb_savetxt.setChecked(self.save_txt)
         vbox4.addWidget(self.cb_savetxt)
 
-        cb_savetif = QtGui.QCheckBox("  Save results as .tif files", self)
+        cb_savetif = QCheckBox("  Save results as .tif files", self)
         cb_savetif.setChecked(True)
         cb_savetif.setDisabled(True)
         vbox4.addWidget(cb_savetif)
@@ -307,16 +321,16 @@ class MainFrame(QtGui.QMainWindow):
         sizer4.setLayout(vbox4)
         vbox.addWidget(sizer4)
 
-        hbox = QtGui.QHBoxLayout()
-        self.button_save = QtGui.QPushButton("Save")
+        hbox = QHBoxLayout()
+        self.button_save = QPushButton("Save")
         self.button_save.clicked.connect(self.OnSave)
         hbox.addWidget(self.button_save)
-        self.button_start = QtGui.QPushButton("Start")
+        self.button_start = QPushButton("Start")
         self.button_start.clicked.connect(self.OnStart)
         hbox.addWidget(self.button_start)
         vbox.addLayout(hbox)
 
-        self.console_info = QtGui.QTextEdit(self)
+        self.console_info = QTextEdit(self)
         self.console_info.setReadOnly(True)
         vbox.addWidget(self.console_info)
 
@@ -336,7 +350,7 @@ class MainFrame(QtGui.QMainWindow):
     def ConsoleOutput(self, text):
 
         cursor = self.console_info.textCursor()
-        cursor.movePosition(QtGui.QTextCursor.End)
+        cursor.movePosition(QTextCursor.End)
         cursor.insertText(text)
         self.console_info.setTextCursor(cursor)
         self.console_info.ensureCursorVisible()
@@ -344,8 +358,8 @@ class MainFrame(QtGui.QMainWindow):
     # ----------------------------------------------------------------------
     def OnBrowseDir(self):
 
-        directory = QtGui.QFileDialog.getExistingDirectory(
-            self, "Choose a directory", "", QtGui.QFileDialog.ShowDirsOnly | QtGui.QFileDialog.ReadOnly
+        directory = QFileDialog.getExistingDirectory(
+            self, "Choose a directory", "", QFileDialog.ShowDirsOnly | QFileDialog.ReadOnly
         )
 
         if directory == "":
@@ -365,7 +379,7 @@ class MainFrame(QtGui.QMainWindow):
 
     # ----------------------------------------------------------------------
     def OnSelectParamFile(self):
-        paramfile = QtGui.QFileDialog.getOpenFileName(self, "Choose a parameter file", "", "Text file (*.txt)")
+        paramfile = QFileDialog.getOpenFileName(self, "Choose a parameter file", "", "Text file (*.txt)")[0]
         self.tc_paramfile.setText(str(os.path.abspath(paramfile)))
 
     # ----------------------------------------------------------------------
@@ -391,18 +405,18 @@ class MainFrame(QtGui.QMainWindow):
         self.console_info.append("Started DPC batch...")
         QCoreApplication.processEvents()
 
-        QtGui.QApplication.setOverrideCursor(Qt.WaitCursor)
+        QApplication.setOverrideCursor(Qt.WaitCursor)
         self.script_file = "DPCBatchGUIScriptFile.txt"
         self.Save(self.script_file)
         dpc.run_batch(self.script_file)
 
-        QtGui.QApplication.restoreOverrideCursor()
+        QApplication.restoreOverrideCursor()
         self.console_info.append("DPC finished.")
 
     # ----------------------------------------------------------------------
     def OnSave(self, evt):
 
-        scriptfile = QtGui.QFileDialog.getSaveFileName(self, "Choose a script file", "", "Text file (*.txt)")
+        scriptfile = QFileDialog.getSaveFileName(self, "Choose a script file", "", "Text file (*.txt)")[0]
 
         if scriptfile == "":
             return
@@ -420,7 +434,7 @@ class MainFrame(QtGui.QMainWindow):
         # self.scan_nums = self.tc_scans.text()
         # self.settings.setValue('scan_nums', self.scan_nums)
         if self.scan_range == "":
-            QtGui.QMessageBox.warning(self, "Error", "Please enter scan range or scan number.")
+            QMessageBox.warning(self, "Error", "Please enter scan range or scan number.")
             return
 
         self.every_n = self.ntc_every_n.text()
@@ -435,7 +449,7 @@ class MainFrame(QtGui.QMainWindow):
         self.data_directory = self.tc_datadir.text()
         self.settings.setValue("data_dir", self.data_directory)
         if (self.data_directory == "") and (self.read_data_from_datastore == 0):
-            QtGui.QMessageBox.warning(self, "Error", "Please enter data directory or read from DataStore.")
+            QMessageBox.warning(self, "Error", "Please enter data directory or read from DataStore.")
             return
         self.file_format = self.tc_format.text()
         self.settings.setValue("file_format", self.file_format)
@@ -447,18 +461,18 @@ class MainFrame(QtGui.QMainWindow):
         self.parameter_file = self.tc_paramfile.text()
         self.settings.setValue("param_file", self.parameter_file)
         if self.parameter_file == "":
-            QtGui.QMessageBox.warning(self, "Error", "Please enter scan parameter file.")
+            QMessageBox.warning(self, "Error", "Please enter scan parameter file.")
             return
         self.processes = self.ntc_processes.text()
         self.settings.setValue("processes", self.processes)
         self.save_dir = self.tc_savedir.text()
         if self.save_dir == "":
-            QtGui.QMessageBox.warning(self, "Error", "Please enter save directory.")
+            QMessageBox.warning(self, "Error", "Please enter save directory.")
             return
         self.settings.setValue("save_dir", self.save_dir)
         self.save_filename = self.tc_savefn.text()
         if self.save_filename == "":
-            QtGui.QMessageBox.warning(self, "Error", "Please enter save file name.")
+            QMessageBox.warning(self, "Error", "Please enter save file name.")
             return
         self.settings.setValue("save_fn", self.save_filename)
         if self.cb_savepng.isChecked():
@@ -514,7 +528,7 @@ class MainFrame(QtGui.QMainWindow):
 
             self.console_info.append("\nSaved script file {0}".format(scriptfile))
         except Exception:
-            QtGui.QMessageBox.warning(self, "Error", "Error writing script file!")
+            QMessageBox.warning(self, "Error", "Error writing script file!")
             return
 
         self.script_file = scriptfile
@@ -525,7 +539,7 @@ class MainFrame(QtGui.QMainWindow):
 
 def main():
 
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     frame = MainFrame()
 
     sys.exit(app.exec_())

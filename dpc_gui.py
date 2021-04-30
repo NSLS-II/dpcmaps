@@ -90,25 +90,25 @@ import h5py
 import dpc_kernel as dpc
 import pyspecfile
 
+from db_config.db_config import db
+
 try:
     import hxntools
-    import hxntools.handlers
     from hxntools.scan_info import ScanInfo
     from hxntools.scan_monitor import HxnScanMonitor
-    from databroker import DataBroker
+
+    # from databroker import DataBroker
 except ImportError as ex:
     print("[!] Unable to import hxntools-related packages some features will " "be unavailable")
     print("[!] (import error: {})".format(ex))
     hxntools = None
-else:
-    hxntools.handlers.register()
 
 
 logger = logging.getLogger(__name__)
 get_save_filename = QFileDialog.getSaveFileName
 get_open_filename = QFileDialog.getOpenFileName
 
-version = "1.0.10"
+version = "1.1.0"
 
 
 SOLVERS = [
@@ -836,7 +836,7 @@ class DPCWindow(QMainWindow):
         if hxntools is not None:
             self.monitor_scans = QAction("Monitor acquired scans", self, checkable=True)
             self.monitor_scans.triggered.connect(self.monitor_toggled)
-            self.scan_monitor = HxnScanMonitor(uid_pv)
+            self.scan_monitor = HxnScanMonitor(uid_pv, db)
             self.scan_monitor.connect("start", self.bs_scan_started)
             self.scan_monitor.connect("stop", self.bs_scan_finished)
             option_menu.addAction(self.monitor_scans)
@@ -997,9 +997,12 @@ class DPCWindow(QMainWindow):
         self.fs_key_cbox.setCurrentIndex(keys.index(key))
 
     def _load_scan_from_mds(self, scan_id, load_config=True):
-        hdrs = DataBroker(scan_id=scan_id)
+
+        hdrs = list(db(scan_id=scan_id))
+
         if len(hdrs) == 1:
             hdr = hdrs[0]
+
         else:
 
             def get_ts(hdr):
@@ -1232,7 +1235,7 @@ class DPCWindow(QMainWindow):
 
         tfont = {"size": "28", "weight": "semibold"}
 
-        plt.hold(True)
+        # plt.hold(True)
         main = DPCWindow.instance
         canvas = self.canvas
         fig = canvas.figure
@@ -1627,7 +1630,7 @@ class DPCWindow(QMainWindow):
         Select path and initiate file format for the data
 
         """
-        fname = get_open_filename(self, "Open file", "/home")
+        fname = get_open_filename(self, "Open file", "/home")[0]
         fname = str(fname)
         basename, extension = os.path.splitext(fname)
         if extension == ".h5":
@@ -1659,7 +1662,7 @@ class DPCWindow(QMainWindow):
         """
         global a, gx, gy, phi, rx, ry
         default_path = str(self.save_path_widget.text())
-        path = get_save_filename(self, "Select path", default_path)
+        path = get_save_filename(self, "Select path", default_path)[0]
         path = str(path)
         self.save_path_widget.setText(path)
         if path != "":
@@ -1689,7 +1692,7 @@ class DPCWindow(QMainWindow):
 
     def save_params_to_file(self):
         self.save_settings()
-        path = get_save_filename(self, "Select path", "", ".txt")
+        path = get_save_filename(self, "Select path", "", ".txt")[0]
         path = str(path)
         if path != "":
             print("Saving parameters to {0}".format(path))
@@ -1723,7 +1726,7 @@ class DPCWindow(QMainWindow):
 
     def load_params_from_file(self):
 
-        path = get_open_filename(self, "Select path", "", "Parameter files (*.txt);;")
+        path = get_open_filename(self, "Select path", "", "Parameter files (*.txt);;")[0]
         path = str(path)
         if path != "":
             print("Loading parameters from {0}".format(path))
@@ -1870,7 +1873,9 @@ class DPCWindow(QMainWindow):
             pass
 
     def launch_batch_gui(self):
-        subprocess.Popen(["python", "dpc_batch_gui.py"])
+        dir_name, _ = os.path.split(__file__)
+        fln = os.path.join(dir_name, "dpc_batch_gui.py")
+        subprocess.Popen(["python", fln])
 
     def swap_x_y(self):
         global a, gx, gy, phi, rx, ry
@@ -1905,7 +1910,7 @@ class DPCWindow(QMainWindow):
         Select the reference image and record its location and name
 
         """
-        fname = get_open_filename(self, "Open file", "/home")
+        fname = get_open_filename(self, "Open file", "/home")[0]
         fname = str(fname)
         if fname != "":
             self.ref_image_path_QLineEdit.setText(fname)
@@ -2342,7 +2347,7 @@ class DPCWindow(QMainWindow):
         menu.popup(self.bad_pixels_widget.mapToGlobal(pos))
 
     def load_from_spec_scan(self):
-        filename = get_open_filename(self, "Scan filename", self.last_path, "*.spec")
+        filename = get_open_filename(self, "Scan filename", self.last_path, "*.spec")[0]
         if not filename:
             return
 
@@ -2499,7 +2504,7 @@ class DPCWindow(QMainWindow):
             self.set_running(False)
 
     def save(self):
-        filename = get_save_filename(self, "Save filename prefix", "", "")
+        filename = get_save_filename(self, "Save filename prefix", "", "")[0]
         if not filename:
             return
 
