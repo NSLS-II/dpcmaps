@@ -145,7 +145,7 @@ phi = None
 rx = None
 ry = None
 
-CMAP_PREVIEW_PATH = os.path.join(os.path.dirname(__file__), ".cmap_previews")
+CMAP_PREVIEW_PATH = os.path.join(os.path.dirname(__file__), "cmap_previews")
 
 
 def load_image_pil(path):
