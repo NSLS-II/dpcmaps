@@ -35,28 +35,25 @@ with open(path.join(here, "requirements.txt")) as requirements_file:
 
 
 setup(
-    name="dpcmaps",
+    name="DPC Maps",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Software for generating DPC Maps",
+    description="Software for generating and analysis of DPC Maps",
     long_description=readme,
-    author="Brookhave National Laboratory",
+    author="Brookhaven National Laboratory",
     author_email="",
     url="https://github.com//dpcmaps",
     python_requires=">={}".format(".".join(str(n) for n in min_version)),
     packages=find_packages(exclude=["docs", "tests"]),
     entry_points={
-        "console_scripts": [
-            # 'command = some.module:some_function',
-        ],
+        "console_scripts": ["dpcmaps = dpcmaps.dpc_gui:run_dpc_gui"],
     },
     include_package_data=True,
     package_data={
-        "dpcmaps": [
-            # When adding files here, remember to update MANIFEST.in as well,
-            # or else they will not be included in the distribution on PyPI!
-            # 'path/to/data_file',
-        ]
+        # When adding files here, remember to update MANIFEST.in as well,
+        # or else they will not be included in the distribution on PyPI!
+        # 'path/to/data_file',
+        "dpcmaps.cmap_previews": ["*.png"]
     },
     install_requires=requirements,
     license="BSD (3-clause)",

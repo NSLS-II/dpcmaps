@@ -23,10 +23,10 @@ import PIL
 from scipy.optimize import minimize
 import time
 from six import StringIO
-import load_timepix
+import dpcmaps.load_timepix as load_timepix
 import h5py
 
-from db_config.db_config import db
+from dpcmaps.db_config.db_config import db
 
 # try:
 #     import filestore.api as fsapi

@@ -85,12 +85,12 @@ except ImportError as ex:
     print("[!] (import error: {})".format(ex))
     havetiff = False
 
-import load_timepix
+import dpcmaps.load_timepix as load_timepix
 import h5py
-import dpc_kernel as dpc
-import pyspecfile
+import dpcmaps.dpc_kernel as dpc
+import dpcmaps.pyspecfile as pyspecfile
 
-from db_config.db_config import db
+from dpcmaps.db_config.db_config import db
 
 try:
     import hxntools
@@ -842,7 +842,7 @@ class DPCWindow(QMainWindow):
             option_menu.addAction(self.monitor_scans)
 
         self.setCentralWidget(self.main_widget)
-        self.setWindowTitle("DPC v.{0}".format(version))
+        self.setWindowTitle("DPC Maps v.{0}".format(version))
 
         # QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
         QApplication.setStyle(QStyleFactory.create("Plastique"))
@@ -2528,13 +2528,20 @@ class DPCWindow(QMainWindow):
         self.console_info.insertPlainText(message)
 
 
-if __name__ == "__main__":
+uid_pv = "XF:03IDC-ES{BS-Scan}UID-I"
+
+
+def run_dpc_gui():
+    global uid_pv
+
     try:
         uid_pv = sys.argv[1]
     except IndexError:
-        uid_pv = "XF:03IDC-ES{BS-Scan}UID-I"
+        # Use default 'uid_pv'
+        pass
 
     logging.basicConfig(level=logging.INFO)
+
     app = QApplication(sys.argv)
     # app.setAttribute(Qt.AA_X11InitThreads)
 
@@ -2547,3 +2554,7 @@ if __name__ == "__main__":
 
     sys.stdout = myStream
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    run_dpc_gui()
