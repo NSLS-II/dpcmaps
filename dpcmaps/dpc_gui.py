@@ -85,12 +85,12 @@ except ImportError as ex:
     print("[!] (import error: {})".format(ex))
     havetiff = False
 
-import load_timepix
+import dpcmaps.load_timepix as load_timepix
 import h5py
-import dpc_kernel as dpc
-import pyspecfile
+import dpcmaps.dpc_kernel as dpc
+import dpcmaps.pyspecfile as pyspecfile
 
-from db_config.db_config import db
+from dpcmaps.db_config.db_config import db
 
 try:
     import hxntools
@@ -145,7 +145,7 @@ phi = None
 rx = None
 ry = None
 
-CMAP_PREVIEW_PATH = os.path.join(os.path.dirname(__file__), ".cmap_previews")
+CMAP_PREVIEW_PATH = os.path.join(os.path.dirname(__file__), "cmap_previews")
 
 
 def load_image_pil(path):
@@ -842,7 +842,7 @@ class DPCWindow(QMainWindow):
             option_menu.addAction(self.monitor_scans)
 
         self.setCentralWidget(self.main_widget)
-        self.setWindowTitle("DPC v.{0}".format(version))
+        self.setWindowTitle("DPC Maps v.{0}".format(version))
 
         # QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
         QApplication.setStyle(QStyleFactory.create("Plastique"))
@@ -1844,32 +1844,32 @@ class DPCWindow(QMainWindow):
 
         try:
             self.setGeometry(loaded["geometry"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_widget.setGeometry(loaded["ref_geo"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.img_type_combobox.setCurrentIndex(loaded["image_type"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_image_path_QLineEdit.setText(loaded["ref_image"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.first_ref_cbox.setChecked(loaded["first_as_ref"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.use_mds.setChecked(loaded["use_mds"])
-        except Exception as ex:
+        except Exception:
             pass
 
     def launch_batch_gui(self):
@@ -2048,7 +2048,7 @@ class DPCWindow(QMainWindow):
                 ax.imshow(points, aspect="auto", cmap=_cm, origin="upper")
                 try:
                     fig.savefig(fn)
-                except Exception as ex:
+                except Exception:
                     print('Unable to create color map preview "%s"' % fn, file=sys.stderr)
                     break
 
@@ -2117,32 +2117,32 @@ class DPCWindow(QMainWindow):
 
         try:
             self.setGeometry(loaded["geometry"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_widget.setGeometry(loaded["ref_geo"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.img_type_combobox.setCurrentIndex(loaded["image_type"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_image_path_QLineEdit.setText(loaded["ref_image"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.first_ref_cbox.setChecked(loaded["first_as_ref"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.use_mds.setChecked(loaded["use_mds"])
-        except Exception as ex:
+        except Exception:
             pass
 
     def closeEvent(self, event=None):
@@ -2528,13 +2528,20 @@ class DPCWindow(QMainWindow):
         self.console_info.insertPlainText(message)
 
 
-if __name__ == "__main__":
+uid_pv = "XF:03IDC-ES{BS-Scan}UID-I"
+
+
+def run_dpc_gui():
+    global uid_pv
+
     try:
         uid_pv = sys.argv[1]
     except IndexError:
-        uid_pv = "XF:03IDC-ES{BS-Scan}UID-I"
+        # Use default 'uid_pv'
+        pass
 
     logging.basicConfig(level=logging.INFO)
+
     app = QApplication(sys.argv)
     # app.setAttribute(Qt.AA_X11InitThreads)
 
@@ -2547,3 +2554,7 @@ if __name__ == "__main__":
 
     sys.stdout = myStream
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    run_dpc_gui()

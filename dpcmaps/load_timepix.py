@@ -166,10 +166,10 @@ def orig(file_name, nx_prb, ny_prb, x_raw=512, y_raw=512, threshold=0):
     return diff_array
 
 
-if 0:
-    plt.figure(0)
-    old = orig("", 256, 256)
-    plt.figure(1)
-    new = load_tiff("", 256, 256)
-    print(sum(new - old))
-    plt.show()
+# if 0:
+#     plt.figure(0)
+#     old = orig("", 256, 256)
+#     plt.figure(1)
+#     new = load_tiff("", 256, 256)
+#     print(sum(new - old))
+#     plt.show()

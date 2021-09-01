@@ -541,6 +541,7 @@ def main():
 
     app = QApplication(sys.argv)
     frame = MainFrame()
+    frame.show()
 
     sys.exit(app.exec_())
 

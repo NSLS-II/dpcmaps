@@ -32,7 +32,6 @@ try:
     import hxntools
     import hxntools.handlers
     from hxntools.scan_info import ScanInfo
-    from databroker import DataBroker
 except ImportError as ex:
     print("[!] Unable to import hxntools library.")
     print("[!] (import error: {})".format(ex))
