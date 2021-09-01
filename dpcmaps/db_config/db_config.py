@@ -53,5 +53,3 @@ try:
 except Exception as ex:
     db = None
     print(f"Beamline Database is not used in pyxrf: {ex}")
-
-

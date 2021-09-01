@@ -1844,32 +1844,32 @@ class DPCWindow(QMainWindow):
 
         try:
             self.setGeometry(loaded["geometry"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_widget.setGeometry(loaded["ref_geo"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.img_type_combobox.setCurrentIndex(loaded["image_type"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_image_path_QLineEdit.setText(loaded["ref_image"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.first_ref_cbox.setChecked(loaded["first_as_ref"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.use_mds.setChecked(loaded["use_mds"])
-        except Exception as ex:
+        except Exception:
             pass
 
     def launch_batch_gui(self):
@@ -2048,7 +2048,7 @@ class DPCWindow(QMainWindow):
                 ax.imshow(points, aspect="auto", cmap=_cm, origin="upper")
                 try:
                     fig.savefig(fn)
-                except Exception as ex:
+                except Exception:
                     print('Unable to create color map preview "%s"' % fn, file=sys.stderr)
                     break
 
@@ -2117,32 +2117,32 @@ class DPCWindow(QMainWindow):
 
         try:
             self.setGeometry(loaded["geometry"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_widget.setGeometry(loaded["ref_geo"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.img_type_combobox.setCurrentIndex(loaded["image_type"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.ref_image_path_QLineEdit.setText(loaded["ref_image"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.first_ref_cbox.setChecked(loaded["first_as_ref"])
-        except Exception as ex:
+        except Exception:
             pass
 
         try:
             self.use_mds.setChecked(loaded["use_mds"])
-        except Exception as ex:
+        except Exception:
             pass
 
     def closeEvent(self, event=None):

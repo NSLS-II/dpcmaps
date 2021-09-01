@@ -18,13 +18,11 @@ from __future__ import print_function
 import os
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
 import PIL
 
 from scipy.misc import imsave
 from scipy.optimize import minimize
 import time
-import zipfile
 import cStringIO as StringIO
 import load_timepix
 

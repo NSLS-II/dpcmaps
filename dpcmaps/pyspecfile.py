@@ -366,7 +366,7 @@ class SPECFileReader(object):
 
                 info = info.lstrip()
 
-                m = re.match("([@a-zA-Z]+)(\d*)", tag)
+                m = re.match(r"([@a-zA-Z]+)(\d*)", tag)
                 if m:
                     tag, tag_index = m.groups()
                 else:
@@ -400,7 +400,7 @@ class SPECFileReader(object):
                 tag_done = False
 
     def _parse_list(self, list_):
-        list_ = re.sub("\s+", ",", list_)
+        list_ = re.sub(r"\s+", ",", list_)
         return list_.split(",")
 
     def _parse_header_F(self, spec_filename):
@@ -497,7 +497,7 @@ class SPECFileReader(object):
             try:
                 line = line.replace("None", "0.0")  # TODO during saving
                 self._scan["lines"].append([float(f) for f in line.split(" ")])
-            except Exception as ex:
+            except Exception:
                 print("Bad scan line: %s" % line)
 
     def parse_data(self, scan):
