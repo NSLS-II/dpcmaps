@@ -35,7 +35,7 @@ with open(path.join(here, "requirements.txt")) as requirements_file:
 
 
 setup(
-    name="DPC Maps",
+    name="dpcmaps",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description="Software for generating and analysis of DPC Maps",
