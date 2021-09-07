@@ -49,6 +49,7 @@ setup(
         "console_scripts": [
             "dpcmaps = dpcmaps.dpc_gui:run_dpc_gui",
             "dpcmaps-batch = dpcmaps.dpc_batch_gui:run_dpc_batch_gui",
+            "dpcmaps-script = dpcmaps.dpc_batch:run_dpc_script",
         ],
     },
     include_package_data=True,

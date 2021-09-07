@@ -665,7 +665,7 @@ def run_batch(script_file):
 """ ------------------------------------------------------------------------------------------------"""
 
 
-def main():
+def run_dpc_script():
 
     try:
         script_file = sys.argv[1]
@@ -677,4 +677,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_dpc_script()
