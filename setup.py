@@ -42,7 +42,7 @@ setup(
     long_description=readme,
     author="Brookhaven National Laboratory",
     author_email="",
-    url="https://github.com//dpcmaps",
+    url="https://github.com/NSLS-II/dpcmaps",
     python_requires=">={}".format(".".join(str(n) for n in min_version)),
     packages=find_packages(exclude=["docs", "tests"]),
     entry_points={
