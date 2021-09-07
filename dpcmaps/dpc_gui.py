@@ -91,6 +91,7 @@ import dpcmaps.dpc_kernel as dpc
 import dpcmaps.pyspecfile as pyspecfile
 
 from dpcmaps.db_config.db_config import db
+from dpcmaps import __version__
 
 try:
     import hxntools
@@ -107,8 +108,6 @@ except ImportError as ex:
 logger = logging.getLogger(__name__)
 get_save_filename = QFileDialog.getSaveFileName
 get_open_filename = QFileDialog.getOpenFileName
-
-version = "1.1.0"
 
 
 SOLVERS = [
@@ -842,7 +841,7 @@ class DPCWindow(QMainWindow):
             option_menu.addAction(self.monitor_scans)
 
         self.setCentralWidget(self.main_widget)
-        self.setWindowTitle("DPC Maps v.{0}".format(version))
+        self.setWindowTitle(f"DPC Maps {__version__}")
 
         # QApplication.setStyle(QStyleFactory.create('Cleanlooks'))
         QApplication.setStyle(QStyleFactory.create("Plastique"))

@@ -27,8 +27,8 @@ from PyQt5.QtCore import Qt, QCoreApplication, QSettings
 
 
 import dpcmaps.dpc_batch as dpc
+from dpcmaps import __version__
 
-version = "1.0.2"
 
 # #----------------------------------------------------------------------
 # class EmittingStream(QObject):
@@ -149,7 +149,7 @@ class MainFrame(QMainWindow):
         self.save_txt = val
 
         self.resize(600, 720)
-        self.setWindowTitle("DPC Batch v.{}".format(version))
+        self.setWindowTitle(f"DPC Batch {__version__}")
 
         pal = QPalette()
         self.setAutoFillBackground(True)
