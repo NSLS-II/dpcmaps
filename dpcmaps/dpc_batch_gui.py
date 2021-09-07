@@ -45,7 +45,7 @@ class MainFrame(QMainWindow):
     def __init__(self):
         super(MainFrame, self).__init__()
 
-        self.settings = QSettings("BNL", "DPC-BATCH-GUI")
+        self.settings = QSettings("dpcmaps", "DPC-BATCH-GUI")
 
         self.script_file = ""
 

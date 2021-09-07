@@ -2084,7 +2084,7 @@ class DPCWindow(QMainWindow):
 
     @property
     def settings(self):
-        return QtCore.QSettings("BNL", "DPC-GUI")
+        return QtCore.QSettings("dpcmaps", "DPC-GUI")
 
     def save_settings(self):
         settings = self.settings
