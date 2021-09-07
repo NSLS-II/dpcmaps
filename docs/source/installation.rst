@@ -5,7 +5,7 @@ Installation
 DPC Maps package may be installed from PyPI, conda-forge or source files located on GitHub.
 It is recommended that DPC Maps is installed in a conda environment. DPC Maps is expected
 to work with Python 3.7-3.9. Create a conda environment with the desired Python version
-(arbitrary name may be selected for the environment, e.g. ``dpcmaps-env``)::
+(arbitrary environment name may be selected, e.g. ``dpcmaps-env``)::
 
     $ conda create -n dpcmaps-env python=3.8
     $ conda activate dpcmaps-env
