@@ -42,11 +42,15 @@ setup(
     long_description=readme,
     author="Brookhaven National Laboratory",
     author_email="",
-    url="https://github.com//dpcmaps",
+    url="https://github.com/NSLS-II/dpcmaps",
     python_requires=">={}".format(".".join(str(n) for n in min_version)),
     packages=find_packages(exclude=["docs", "tests"]),
     entry_points={
-        "console_scripts": ["dpcmaps = dpcmaps.dpc_gui:run_dpc_gui"],
+        "console_scripts": [
+            "dpcmaps = dpcmaps.dpc_gui:run_dpc_gui",
+            "dpcmaps-batch = dpcmaps.dpc_batch_gui:run_dpc_batch_gui",
+            "dpcmaps-script = dpcmaps.dpc_batch:run_dpc_script",
+        ],
     },
     include_package_data=True,
     package_data={

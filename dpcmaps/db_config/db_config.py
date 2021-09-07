@@ -38,18 +38,18 @@ try:
         raise Exception("Beamline is not identified")
 
     if beamline_name == "HXN":
-        from pyxrf.db_config.hxn_db_config import db
+        from dpcmaps.db_config.hxn_db_config import db
     # elif beamline_name == "SRX":
-    #     from pyxrf.db_config.srx_db_config import db
+    #     from dpcmaps.db_config.srx_db_config import db
     # elif beamline_name == "XFM":
-    #     from pyxrf.db_config.xfm_db_config import db
+    #     from dpcmaps.db_config.xfm_db_config import db
     # elif beamline_name == "TES":
-    #     from pyxrf.db_config.tes_db_config import db
+    #     from dpcmaps.db_config.tes_db_config import db
     else:
         db = None
         db_analysis = None
-        print(f"Beamline Database is not used in pyxrf: beamline {beamline_name!r} is not supported")
+        print(f"Beamline Database is not used in DpcMaps: beamline {beamline_name!r} is not supported")
 
 except Exception as ex:
     db = None
-    print(f"Beamline Database is not used in pyxrf: {ex}")
+    print(f"Beamline Database is not used in DpcMaps: {ex}")

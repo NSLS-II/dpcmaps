@@ -26,9 +26,9 @@ from PyQt5.QtGui import QPalette, QColor, QIntValidator, QTextCursor
 from PyQt5.QtCore import Qt, QCoreApplication, QSettings
 
 
-import dpc_batch as dpc
+from dpcmaps.dpc_batch import run_batch
+from dpcmaps import __version__
 
-version = "1.0.2"
 
 # #----------------------------------------------------------------------
 # class EmittingStream(QObject):
@@ -45,7 +45,7 @@ class MainFrame(QMainWindow):
     def __init__(self):
         super(MainFrame, self).__init__()
 
-        self.settings = QSettings("BNL", "DPC-BATCH-GUI")
+        self.settings = QSettings("dpcmaps", "DPC-BATCH-GUI")
 
         self.script_file = ""
 
@@ -149,7 +149,7 @@ class MainFrame(QMainWindow):
         self.save_txt = val
 
         self.resize(600, 720)
-        self.setWindowTitle("DPC Batch v.{}".format(version))
+        self.setWindowTitle(f"DPC Batch {__version__}")
 
         pal = QPalette()
         self.setAutoFillBackground(True)
@@ -408,7 +408,7 @@ class MainFrame(QMainWindow):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.script_file = "DPCBatchGUIScriptFile.txt"
         self.Save(self.script_file)
-        dpc.run_batch(self.script_file)
+        run_batch(self.script_file)
 
         QApplication.restoreOverrideCursor()
         self.console_info.append("DPC finished.")
@@ -537,7 +537,7 @@ class MainFrame(QMainWindow):
 """ ------------------------------------------------------------------------------------------------"""
 
 
-def main():
+def run_dpc_batch_gui():
 
     app = QApplication(sys.argv)
     frame = MainFrame()
@@ -547,4 +547,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_dpc_batch_gui()
