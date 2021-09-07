@@ -21,7 +21,7 @@ except ImportError as ex:
     havetiff = False
 
 
-from dpcmaps.db_config.db_config import db
+from .db_config.db_config import db
 
 # try:
 #     from databroker import db, get_events
@@ -38,7 +38,8 @@ except ImportError as ex:
     hxntools = None
 
 
-import dpcmaps.dpc_kernel as dpc
+from .dpc_kernel import main as dpc_kernel_main
+from .dpc_kernel import load_image_filestore
 
 version = "0.1.0"
 
@@ -598,7 +599,7 @@ def run_batch(script_file):
         dpc_settings["scan"] = calc_scan_numbers[i_scan]
 
         if get_data_from_datastore:
-            load_image = dpc.load_image_filestore
+            load_image = load_image_filestore
             dpc_settings["file_format"] = ""
             dpc_settings["ref_image"] = ""
             dpc_settings["use_hdf5"] = False
@@ -642,7 +643,9 @@ def run_batch(script_file):
             pool = mp.Pool(processes=processes)
 
         # Run the analysis
-        a, gx, gy, phi, rx, ry = dpc.main(pool=pool, display_fcn=None, load_image=load_image, **dpc_settings)
+        a, gx, gy, phi, rx, ry = dpc_kernel_main(
+            pool=pool, display_fcn=None, load_image=load_image, **dpc_settings
+        )
 
         save_results(
             a,
