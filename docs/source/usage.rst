@@ -2,8 +2,17 @@
 Usage
 =====
 
-Start by importing dpcmaps.
+Starting DPC Maps
+-----------------
 
-.. code-block:: python
+Activate conda environment that contains ``dcpmaps`` package (e.g. ``dpcmaps-env``)::
 
-    import dpcmaps
+    $ conda activate dpcmaps-env
+
+Start DPC Maps GUI from the command line::
+
+    $ dpcmaps
+
+Start DPC Batch Maps GUI from the command line ::
+
+    $ dpcmaps-batch
