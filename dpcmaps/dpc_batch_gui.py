@@ -26,7 +26,7 @@ from PyQt5.QtGui import QPalette, QColor, QIntValidator, QTextCursor
 from PyQt5.QtCore import Qt, QCoreApplication, QSettings
 
 
-import dpcmaps.dpc_batch as dpc
+from dpcmaps.dpc_batch import run_batch
 from dpcmaps import __version__
 
 
@@ -408,7 +408,7 @@ class MainFrame(QMainWindow):
         QApplication.setOverrideCursor(Qt.WaitCursor)
         self.script_file = "DPCBatchGUIScriptFile.txt"
         self.Save(self.script_file)
-        dpc.run_batch(self.script_file)
+        run_batch(self.script_file)
 
         QApplication.restoreOverrideCursor()
         self.console_info.append("DPC finished.")
