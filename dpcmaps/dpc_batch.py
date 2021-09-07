@@ -670,7 +670,7 @@ def run_dpc_script():
     try:
         script_file = sys.argv[1]
     except Exception:
-        print("Error - Script file not given.\nUsage: python dpc_batch.py myscript.txt")
+        print("Script file is not specified.\nUsage: dpcmaps-script <script-file_name>")
         exit()
 
     run_batch(script_file)
