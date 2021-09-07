@@ -537,7 +537,7 @@ class MainFrame(QMainWindow):
 """ ------------------------------------------------------------------------------------------------"""
 
 
-def main():
+def run_dpc_batch_gui():
 
     app = QApplication(sys.argv)
     frame = MainFrame()
@@ -547,4 +547,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_dpc_batch_gui()
