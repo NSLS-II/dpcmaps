@@ -21,7 +21,7 @@ except ImportError as ex:
     havetiff = False
 
 
-from db_config.db_config import db
+from dpcmaps.db_config.db_config import db
 
 # try:
 #     from databroker import db, get_events
@@ -38,7 +38,7 @@ except ImportError as ex:
     hxntools = None
 
 
-import dpc_kernel as dpc
+import dpcmaps.dpc_kernel as dpc
 
 version = "0.1.0"
 
