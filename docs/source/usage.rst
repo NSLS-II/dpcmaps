@@ -13,6 +13,10 @@ Start DPC Maps GUI from the command line::
 
     $ dpcmaps
 
-Start DPC Batch Maps GUI from the command line ::
+Start DPC Batch Maps GUI from the command line::
 
     $ dpcmaps-batch
+
+Run batch processing script from the command line (script save by ``dpcmaps-batch``)::
+
+    $ dpcmaps-script <script-file-name>
