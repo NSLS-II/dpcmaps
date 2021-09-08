@@ -26,7 +26,7 @@ from PyQt5.QtGui import QPalette, QColor, QIntValidator, QTextCursor
 from PyQt5.QtCore import Qt, QCoreApplication, QSettings
 
 
-from dpcmaps.dpc_batch import run_batch
+from .dpc_batch import run_batch
 from dpcmaps import __version__
 
 
