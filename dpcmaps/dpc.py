@@ -253,7 +253,7 @@ def recon(gx, gy, dx=0.1, dy=0.1, pad=1, w=1.0):
     c = -1j * (kappax * tx + w * kappay * ty)
 
     c = np.ma.masked_values(c, 0)
-    c /= kappax ** 2 + w * kappay ** 2
+    c /= kappax**2 + w * kappay**2
     c = np.ma.filled(c, 0)
 
     c = np.fft.ifftshift(c)
