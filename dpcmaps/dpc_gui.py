@@ -65,7 +65,7 @@ from skimage import exposure
 import numpy as np
 import matplotlib as mpl
 
-from matplotlib.backends.backend_qt4agg import (
+from matplotlib.backends.backend_qtagg import (
     FigureCanvasQTAgg as FigureCanvas,
     NavigationToolbar2QT as NavigationToolbar,
 )
@@ -380,7 +380,7 @@ class DPCWindow(QMainWindow):
         QMainWindow.__init__(self, parent)
         DPCWindow.instance = self
 
-        self.bin_num = 2 ** 16
+        self.bin_num = 2**16
         self._thread = None
         self.ion_data = None
         self.bad_flag = 0
@@ -868,7 +868,7 @@ class DPCWindow(QMainWindow):
             self.strap_end,
         ]:
             w.setMinimum(0)
-            w.setMaximum(int(2 ** 31 - 1))
+            w.setMaximum(int(2**31 - 1))
             try:
                 w.setDecimals(3)
             except Exception:
