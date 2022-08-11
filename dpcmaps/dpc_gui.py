@@ -71,6 +71,7 @@ try:
         NavigationToolbar2QT as NavigationToolbar,
     )
 except ImportError:
+    # Compatibility with older Matplotlib
     from matplotlib.backends.backend_qt5agg import (
         FigureCanvasQTAgg as FigureCanvas,
         NavigationToolbar2QT as NavigationToolbar,
