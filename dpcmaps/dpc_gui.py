@@ -65,10 +65,16 @@ from skimage import exposure
 import numpy as np
 import matplotlib as mpl
 
-from matplotlib.backends.backend_qtagg import (
-    FigureCanvasQTAgg as FigureCanvas,
-    NavigationToolbar2QT as NavigationToolbar,
-)
+try:
+    from matplotlib.backends.backend_qtagg import (
+        FigureCanvasQTAgg as FigureCanvas,
+        NavigationToolbar2QT as NavigationToolbar,
+    )
+except ImportError:
+    from matplotlib.backends.backend_qt5agg import (
+        FigureCanvasQTAgg as FigureCanvas,
+        NavigationToolbar2QT as NavigationToolbar,
+    )
 
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle
