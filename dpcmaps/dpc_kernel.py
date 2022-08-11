@@ -406,6 +406,10 @@ def recon(gx, gy, dx=0.1, dy=0.1, pad=1, w=1.0):
     c /= kappax**2 + w * kappay**2
     c = np.ma.filled(c, 0)
 
+    # use a high-pass filter to suppress amplified low-frequency signals, H.Y, 08/02/2022
+    f = 1- 0.9*np.exp(-np.square(kappax*dx)-np.square(kappay*dy))
+    c = f*c
+
     c = np.fft.ifftshift(c)
     phi_padding = np.fft.ifft2(c)
     phi_padding = -phi_padding.real
