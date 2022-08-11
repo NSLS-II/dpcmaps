@@ -65,10 +65,17 @@ from skimage import exposure
 import numpy as np
 import matplotlib as mpl
 
-from matplotlib.backends.backend_qtagg import (
-    FigureCanvasQTAgg as FigureCanvas,
-    NavigationToolbar2QT as NavigationToolbar,
-)
+try:
+    from matplotlib.backends.backend_qtagg import (
+        FigureCanvasQTAgg as FigureCanvas,
+        NavigationToolbar2QT as NavigationToolbar,
+    )
+except ImportError:
+    # Compatibility with older Matplotlib
+    from matplotlib.backends.backend_qt5agg import (
+        FigureCanvasQTAgg as FigureCanvas,
+        NavigationToolbar2QT as NavigationToolbar,
+    )
 
 from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle
@@ -1606,6 +1613,7 @@ class DPCWindow(QMainWindow):
                 if (pos.y()+10)>=self.roi_img.size[1]:
                     self.temp_lbl.setAlignment(QtCore.Qt.AlignTop)
 
+   /data: /GPFS/XF03ID1
                 width = bottom_right_x - top_left_x + 1
                 height = bottom_right_y - top_left_y+ 1
                 img_fraction = self.img_lbl.pixmap().copy(top_left_x,
@@ -1720,6 +1728,7 @@ class DPCWindow(QMainWindow):
             param_file.write("reverse_x = {0}\n".format(settings["reverse_x"]))
             param_file.write("reverse_y = {0}\n".format(settings["reverse_y"]))
             param_file.write("pad = {0}\n".format(1 if settings["pad"] else 0))
+            param_file.write("bad_pixels = {0}\n".format(settings["bad_pixels"]))
 
             param_file.close()
 
@@ -1822,6 +1831,12 @@ class DPCWindow(QMainWindow):
                 elif "pad" in line.lower():
                     slist = line.strip().split("=")
                     settings.setValue("pad", int(slist[1]))
+
+                elif "bad_pixels" in line.lower():
+                    slist = line.strip().split("=")
+                    settings.setValue(
+                        "bad_pixels", np.asarray(np.matrix(slist[1].strip(), dtype="int")).reshape((2, -1))
+                    )
 
             param_file.close()
 
