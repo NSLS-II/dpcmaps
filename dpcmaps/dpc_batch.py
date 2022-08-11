@@ -335,7 +335,9 @@ def read_scan_parameters_from_file(scan_parameters, param_filename):
 
             elif "bad_pixels" in line.lower():
                 slist = line.strip().split("=")
-                scan_parameters["bad_pixels"] = np.asarray(np.matrix(slist[1].strip(),dtype="int")).reshape((2,-1))
+                scan_parameters["bad_pixels"] = np.asarray(np.matrix(slist[1].strip(), dtype="int")).reshape(
+                    (2, -1)
+                )
 
         f.close()
 

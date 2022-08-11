@@ -1827,8 +1827,10 @@ class DPCWindow(QMainWindow):
 
                 elif "bad_pixels" in line.lower():
                     slist = line.strip().split("=")
-                    settings.setValue("bad_pixels", np.asarray(np.matrix(slist[1].strip(),dtype="int")).reshape((2,-1)))
-                    
+                    settings.setValue(
+                        "bad_pixels", np.asarray(np.matrix(slist[1].strip(), dtype="int")).reshape((2, -1))
+                    )
+
             param_file.close()
 
         loaded = {}
